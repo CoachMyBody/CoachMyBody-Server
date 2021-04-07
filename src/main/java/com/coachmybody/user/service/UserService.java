@@ -1,11 +1,12 @@
 package com.coachmybody.user.service;
 
 import java.time.Instant;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.coachmybody.common.exception.DuplicatedEntityException;
+import com.coachmybody.common.exception.NotFoundEntityException;
 import com.coachmybody.user.domain.User;
 import com.coachmybody.user.domain.UserAuth;
 import com.coachmybody.user.domain.repository.UserAuthRepository;
@@ -25,7 +26,7 @@ public class UserService {
 
 	public void register(RegisterRequest request) {
 		if (userRepository.findBySocialId(request.getSocialId()).isPresent()) {
-			throw new IllegalArgumentException();
+			throw new DuplicatedEntityException();
 		}
 
 		User user = User.of(request);
@@ -37,7 +38,7 @@ public class UserService {
 		String socialId = request.getSocialId();
 
 		User user = userRepository.findBySocialId(socialId)
-			.orElseThrow(NoSuchElementException::new);
+			.orElseThrow(NotFoundEntityException::new);
 
 		Long userId = user.getId();
 
