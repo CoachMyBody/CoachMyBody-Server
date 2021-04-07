@@ -14,6 +14,12 @@ public class GlobalExceptionHandler {
 			.body(new ProblemResponse("Unauthorized", 401, "INVALID_ACCESS_TOKEN"));
 	}
 
+	@ExceptionHandler(InvalidRefreshTokenException.class)
+	private ResponseEntity<ProblemResponse> invalidRefreshTokenExceptionHandler() {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+			.body(new ProblemResponse("Invalid Refresh Token", 400, "REFRESH_TOKEN"));
+	}
+
 	@ExceptionHandler(DuplicatedEntityException.class)
 	private ResponseEntity<ProblemResponse> duplicatedEntityExceptionHandler() {
 		return ResponseEntity.status(HttpStatus.CONFLICT)

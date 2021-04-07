@@ -27,7 +27,7 @@ public class UserAuth {
 	private Long id;
 
 	@Column(unique = true)
-	private Long userId;
+	private String userId;
 
 	private String accessToken;
 
@@ -39,7 +39,7 @@ public class UserAuth {
 	private Instant createdDate = Instant.now();
 
 
-	public static UserAuth newAuth(Long userId) {
+	public static UserAuth newAuth(String userId) {
 		Instant now = Instant.now();
 
 		return UserAuth.builder()
@@ -53,7 +53,6 @@ public class UserAuth {
 	public void refresh() {
 		Instant now = Instant.now();
 		this.accessToken = UuidUtils.generateUuid();
-		this.refreshToken = UuidUtils.generateUuid();
 		this.expiredAt = DateUtils.calculateExpireAt(now);
 	}
 }

@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.coachmybody.common.exception.DuplicatedEntityException;
+import com.coachmybody.common.exception.InvalidAccessTokenException;
+import com.coachmybody.common.exception.InvalidRefreshTokenException;
 import com.coachmybody.common.exception.NotFoundEntityException;
 import com.coachmybody.user.domain.User;
 import com.coachmybody.user.domain.UserAuth;
@@ -13,8 +15,10 @@ import com.coachmybody.user.domain.repository.UserAuthRepository;
 import com.coachmybody.user.domain.repository.UserRepository;
 import com.coachmybody.user.interfaces.dto.AuthResponse;
 import com.coachmybody.user.interfaces.dto.LoginRequest;
+import com.coachmybody.user.interfaces.dto.RefreshRequest;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -34,13 +38,11 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public AuthResponse login(LoginRequest request) {
-		String socialId = request.getSocialId();
-
+	public AuthResponse login(@NonNull final String socialId) {
 		User user = userRepository.findBySocialId(socialId)
 			.orElseThrow(NotFoundEntityException::new);
 
-		Long userId = user.getId();
+		String userId = user.getId();
 
 		UserAuth newAuth = UserAuth.newAuth(userId);
 
@@ -56,7 +58,7 @@ public class UserService {
 	}
 
 
-	public boolean isValidToken(String accessToken) {
+	public boolean isValidToken(@NonNull final String accessToken) {
 		Optional<UserAuth> optionalUserAuth = userAuthRepository.findByAccessToken(accessToken);
 
 		if (optionalUserAuth.isEmpty()) {
@@ -74,4 +76,14 @@ public class UserService {
 		return true;
 	}
 
+	public AuthResponse refresh(@NonNull final String refreshToken) {
+		UserAuth userAuth = userAuthRepository.findByRefreshToken(refreshToken)
+			.orElseThrow(InvalidRefreshTokenException::new);
+
+		userAuth.refresh();
+
+		userAuthRepository.save(userAuth);
+
+		return AuthResponse.of(userAuth);
+	}
 }

@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.coachmybody.common.exception.ProblemResponse;
 import com.coachmybody.user.interfaces.dto.AuthResponse;
 import com.coachmybody.user.interfaces.dto.LoginRequest;
+import com.coachmybody.user.interfaces.dto.RefreshRequest;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 import com.coachmybody.user.service.UserService;
 
@@ -37,8 +39,8 @@ public class AuthController {
 	})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/register")
-	public void register(@RequestBody @Valid RegisterRequest request) {
-		userService.register(request);
+	public void register(@RequestBody @Valid RegisterRequest registerRequest) {
+		userService.register(registerRequest);
 	}
 
 
@@ -49,8 +51,18 @@ public class AuthController {
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/login")
-	public AuthResponse login(@RequestBody @Valid LoginRequest request) {
-		return userService.login(request);
+	public AuthResponse login(@RequestBody @Valid LoginRequest loginRequest) {
+		return userService.login(loginRequest.getSocialId());
 	}
 
+	@ApiOperation("토큰 갱신")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "토큰 갱신 성공"),
+		@ApiResponse(code = 400, message = "올바르지 않은 리프레시 토큰", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping("/refresh")
+	public AuthResponse refresh(@RequestBody @Valid RefreshRequest refreshRequest) {
+		return userService.refresh(refreshRequest.getRefreshToken());
+	}
 }
