@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.coachmybody.common.util.DateSupportUtil;
-import com.coachmybody.common.util.UuidUtil;
+import com.coachmybody.common.util.DateUtils;
+import com.coachmybody.common.util.UuidUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,16 +44,16 @@ public class UserAuth {
 
 		return UserAuth.builder()
 			.userId(userId)
-			.accessToken(UuidUtil.generateUuid())
-			.refreshToken(UuidUtil.generateUuid())
-			.expiredAt(DateSupportUtil.calculateExpireAt(now))
+			.accessToken(UuidUtils.generateUuid())
+			.refreshToken(UuidUtils.generateUuid())
+			.expiredAt(DateUtils.calculateExpireAt(now))
 			.build();
 	}
 
 	public void refresh() {
 		Instant now = Instant.now();
-		this.accessToken = UuidUtil.generateUuid();
-		this.refreshToken = UuidUtil.generateUuid();
-		this.expiredAt = DateSupportUtil.calculateExpireAt(now);
+		this.accessToken = UuidUtils.generateUuid();
+		this.refreshToken = UuidUtils.generateUuid();
+		this.expiredAt = DateUtils.calculateExpireAt(now);
 	}
 }
