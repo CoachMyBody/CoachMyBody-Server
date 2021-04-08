@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.coachmybody.common.util.UuidUtils;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 import com.coachmybody.user.type.LoginType;
 
@@ -25,7 +26,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String id;
 
 	@Column(unique = true)
 	private String socialId;
@@ -39,6 +40,7 @@ public class User {
 
 	public static User of(RegisterRequest request) {
 		return User.builder()
+			.id(UuidUtils.generateUuid())
 			.socialId(request.getSocialId())
 			.loginType(request.getLoginType())
 			.nickname(request.getNickname())

@@ -7,7 +7,7 @@ import java.time.temporal.TemporalUnit;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class DateSupportUtil {
+public class DateUtils {
 
 	private static final int EXPIRE_AMOUNT = 1;
 	private static final TemporalUnit EXPIRE_UNIT = ChronoUnit.DAYS;
