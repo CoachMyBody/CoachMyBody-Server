@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.test.ApiTest;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 import com.coachmybody.user.service.UserService;
@@ -34,7 +35,7 @@ class AuthControllerTest extends ApiTest {
 	void registerDuplicated() {
 		RegisterRequest duplicatedRequest = new RegisterRequest("socialId", LoginType.KAKAO, "nickname", "email@email.co");
 
-		doThrow(new IllegalArgumentException())
+		doThrow(new DuplicatedEntityException())
 			.when(userService)
 			.register(duplicatedRequest);
 
@@ -44,6 +45,6 @@ class AuthControllerTest extends ApiTest {
 			.when()
 			.post("/api/v1/auth/register")
 			.then()
-			.statusCode(500);
+			.statusCode(409);
 	}
 }
