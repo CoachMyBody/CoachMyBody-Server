@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.coachmybody.common.exception.InvalidAccessTokenException;
-import com.coachmybody.user.service.UserService;
+import com.coachmybody.user.application.UserService;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

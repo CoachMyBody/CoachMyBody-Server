@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.coachmybody.common.interceptor.SecurityInterceptor;
-import com.coachmybody.user.service.UserService;
+import com.coachmybody.user.application.UserService;
 
 import lombok.RequiredArgsConstructor;
 

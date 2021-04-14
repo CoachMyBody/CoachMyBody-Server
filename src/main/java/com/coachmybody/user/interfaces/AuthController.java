@@ -15,7 +15,7 @@ import com.coachmybody.user.interfaces.dto.AuthResponse;
 import com.coachmybody.user.interfaces.dto.LoginRequest;
 import com.coachmybody.user.interfaces.dto.RefreshRequest;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
-import com.coachmybody.user.service.UserService;
+import com.coachmybody.user.application.UserService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
