@@ -27,7 +27,7 @@ public class RegisterRequest {
 	@NotNull(message = "The nickname must not be Null")
 	String nickname;
 
-	@ApiModelProperty(value = "이메일", required = true)
+	@ApiModelProperty(value = "이메일", example = "test@cmb.com", required = true)
 	@Email
 	String email;
 }
