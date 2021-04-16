@@ -1,4 +1,4 @@
-package com.coachmybody.user.service;
+package com.coachmybody.user.application;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.coachmybody.common.exception.DuplicatedEntityException;
-import com.coachmybody.common.exception.InvalidAccessTokenException;
 import com.coachmybody.common.exception.InvalidRefreshTokenException;
 import com.coachmybody.common.exception.NotFoundEntityException;
 import com.coachmybody.user.domain.User;
@@ -14,8 +13,6 @@ import com.coachmybody.user.domain.UserAuth;
 import com.coachmybody.user.domain.repository.UserAuthRepository;
 import com.coachmybody.user.domain.repository.UserRepository;
 import com.coachmybody.user.interfaces.dto.AuthResponse;
-import com.coachmybody.user.interfaces.dto.LoginRequest;
-import com.coachmybody.user.interfaces.dto.RefreshRequest;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 
 import lombok.NonNull;

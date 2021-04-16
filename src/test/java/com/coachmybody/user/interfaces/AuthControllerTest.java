@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.test.ApiTest;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
-import com.coachmybody.user.service.UserService;
+import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.type.LoginType;
 
 import io.restassured.http.ContentType;

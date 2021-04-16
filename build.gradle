@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.4.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 	id 'java'
 }
 
@@ -18,6 +19,11 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+
+	implementation('com.querydsl:querydsl-jpa')
+
+	implementation('com.google.guava:guava:30.1.1-jre')
+
 	implementation("io.springfox:springfox-boot-starter:3.0.0"){
 		exclude group: "io.swagger", module: "swagger-annotations"
 		exclude group: "io.swagger", module: "swagger-models"
@@ -47,4 +53,20 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+def querydslSrcDir = 'src/main/generated/querydsl'
+
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslSrcDir
+}
+sourceSets {
+	main.java.srcDirs querydslSrcDir
+}
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
 }
