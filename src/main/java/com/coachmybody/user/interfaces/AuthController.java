@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.coachmybody.common.exception.ProblemResponse;
+import com.coachmybody.common.dto.ProblemResponse;
 import com.coachmybody.user.interfaces.dto.AuthResponse;
 import com.coachmybody.user.interfaces.dto.LoginRequest;
 import com.coachmybody.user.interfaces.dto.RefreshRequest;

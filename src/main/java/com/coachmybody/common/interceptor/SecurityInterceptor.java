@@ -1,5 +1,7 @@
 package com.coachmybody.common.interceptor;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,6 +26,12 @@ public class SecurityInterceptor implements HandlerInterceptor {
 		@NonNull Object handler) {
 
 		String authorization = request.getHeader("Authorization");
+
+		List<String> permitHost = List.of("0:0:0:0:0:0:0:1", "127.0.0.1");
+
+		if (permitHost.contains(request.getRemoteHost())) {
+			return true;
+		}
 
 		if (authorization != null) {
 			String token = authorization.substring(TOKEN_PREFIX);

@@ -1,10 +1,23 @@
 package com.coachmybody.exercise.domain;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
+import com.coachmybody.exercise.type.BodyPartType;
+import com.coachmybody.exercise.type.ExerciseCategoryType;
+
+import lombok.Getter;
+
+@Getter
 @Entity
 public class Exercise {
 	@Id
@@ -13,15 +26,18 @@ public class Exercise {
 
 	private String name;
 
-	private Long categoryId;
+	@Enumerated(value = EnumType.STRING)
+	private ExerciseCategoryType category;
 
-	private Long bodyTypeId;
-
-	private Long bodyTypeSubId;
+	@Enumerated(value = EnumType.STRING)
+	private BodyPartType bodyPart;
 
 	private String imageUri;
 
 	private String description;
 
 	private String caution;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "exercise", cascade = CascadeType.ALL)
+	private List<ExerciseToBodyPartSub> exerciseToBodyPartSubList;
 }
