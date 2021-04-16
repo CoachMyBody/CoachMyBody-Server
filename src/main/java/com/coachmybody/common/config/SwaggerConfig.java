@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.coachmybody.common.dto.PageResponse;
+
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiKey;
@@ -27,6 +29,7 @@ public class SwaggerConfig {
 			.apis(RequestHandlerSelectors.basePackage("com.coachmybody"))
 			.paths(PathSelectors.ant("/**"))
 			.build()
+			.genericModelSubstitutes(PageResponse.class)
 			.useDefaultResponseMessages(false);
 	}
 
