@@ -1,10 +1,13 @@
 spring:
+  config:
+    activate:
+      on-profile: local
   h2:
     console:
       enabled: true
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         format-sql: true
@@ -15,6 +18,30 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format-sql: true
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+  datasource:
+    initialization-mode: always
+    url: jdbc:mariadb://coach-my-body-rds.cy7q1m0zru6c.ap-northeast-2.rds.amazonaws.com:3306/coachmybody
+    username: coachmybody
+    password: coachmybodyserver()
+    driver-class-name: org.mariadb.jdbc.Driver
 logging:
   level:
     org:
