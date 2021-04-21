@@ -1,12 +1,15 @@
 package com.coachmybody.user.domain;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.Type;
 
 import com.coachmybody.common.util.DateUtils;
 import com.coachmybody.common.util.UuidUtils;
@@ -27,7 +30,8 @@ public class UserAuth {
 	private Long id;
 
 	@Column(unique = true)
-	private String userId;
+	@Type(type = "uuid-char")
+	private UUID userId;
 
 	private String accessToken;
 
@@ -39,7 +43,7 @@ public class UserAuth {
 	private Instant createdDate = Instant.now();
 
 
-	public static UserAuth newAuth(String userId) {
+	public static UserAuth newAuth(UUID userId) {
 		Instant now = Instant.now();
 
 		return UserAuth.builder()

@@ -2,6 +2,7 @@ package com.coachmybody.user.application;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class UserService {
 		User user = userRepository.findBySocialId(socialId)
 			.orElseThrow(NotFoundEntityException::new);
 
-		String userId = user.getId();
+		UUID userId = user.getId();
 
 		UserAuth newAuth = UserAuth.newAuth(userId);
 

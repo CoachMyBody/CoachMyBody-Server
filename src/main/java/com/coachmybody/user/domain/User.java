@@ -1,12 +1,15 @@
 package com.coachmybody.user.domain;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.Type;
 
 import com.coachmybody.common.util.UuidUtils;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
@@ -25,8 +28,9 @@ import lombok.NoArgsConstructor;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
+	@GeneratedValue
+	@Type(type = "uuid-char")
+	private UUID id;
 
 	@Column(unique = true)
 	private String socialId;
@@ -40,7 +44,7 @@ public class User {
 
 	public static User of(RegisterRequest request) {
 		return User.builder()
-			.id(UuidUtils.generateUuid())
+			.id(UUID.randomUUID())
 			.socialId(request.getSocialId())
 			.loginType(request.getLoginType())
 			.nickname(request.getNickname())
