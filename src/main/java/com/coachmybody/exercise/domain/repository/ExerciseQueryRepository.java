@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.exercise.interfaces.dto.ExerciseFilterRequest;
+import com.coachmybody.exercise.type.BodyPartType;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,6 +34,10 @@ public class ExerciseQueryRepository {
 	}
 
 	BooleanExpression eq(ExerciseFilterRequest filter) {
+		if (filter.getBodyPart() == BodyPartType.NONE) {
+			return exercise.category.eq(filter.getCategory());
+		}
+
 		return exercise.bodyPart.eq(filter.getBodyPart())
 			.and(exercise.category.eq(filter.getCategory()));
 	}
