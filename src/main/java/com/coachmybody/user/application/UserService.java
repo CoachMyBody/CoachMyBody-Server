@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.coachmybody.common.exception.DuplicatedEntityException;
+import com.coachmybody.common.exception.InvalidAccessTokenException;
 import com.coachmybody.common.exception.InvalidRefreshTokenException;
 import com.coachmybody.common.exception.NotFoundEntityException;
 import com.coachmybody.user.domain.User;
@@ -55,7 +56,6 @@ public class UserService {
 		return AuthResponse.of(newAuth);
 	}
 
-
 	public boolean isValidToken(@NonNull final String accessToken) {
 		Optional<UserAuth> optionalUserAuth = userAuthRepository.findByAccessToken(accessToken);
 
@@ -83,5 +83,13 @@ public class UserService {
 		userAuthRepository.save(userAuth);
 
 		return AuthResponse.of(userAuth);
+	}
+
+	public User findByToken(@NonNull final String token) {
+		UserAuth userAuth = userAuthRepository.findByAccessToken(token)
+			.orElseThrow(InvalidAccessTokenException::new);
+
+		return userRepository.findById(userAuth.getUserId())
+			.orElseThrow(NotFoundEntityException::new);
 	}
 }
