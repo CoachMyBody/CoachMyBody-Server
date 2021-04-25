@@ -33,4 +33,10 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND)
 			.body(new ProblemResponse("Not Found Entity", 404, "NOT_FOUND_ENTITY"));
 	}
+
+	@ExceptionHandler(NotAcceptableException.class)
+	private ResponseEntity<ProblemResponse> notAcceptableExceptionHandler() {
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+			.body(new ProblemResponse("Not Acceptable", 406, "NOT_ACCEPTABLE"));
+	}
 }
