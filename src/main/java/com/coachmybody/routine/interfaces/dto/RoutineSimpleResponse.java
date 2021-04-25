@@ -31,7 +31,7 @@ public class RoutineSimpleResponse {
 		int exerciseCount = 0;
 
 		List<RoutineExercise> exercises = routine.getExercises();
-		if (exercises != null) {
+		if (exercises.size() > 1) {
 			imageUri = exercises.get(0).getExercise().getImageUri();
 			exerciseCount = exercises.size();
 		}
