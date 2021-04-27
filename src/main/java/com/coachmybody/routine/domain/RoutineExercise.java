@@ -10,8 +10,14 @@ import javax.persistence.ManyToOne;
 
 import com.coachmybody.exercise.domain.Exercise;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 public class RoutineExercise {

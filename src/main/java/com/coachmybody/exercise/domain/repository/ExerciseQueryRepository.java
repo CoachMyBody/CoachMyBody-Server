@@ -2,6 +2,8 @@ package com.coachmybody.exercise.domain.repository;
 
 import static com.coachmybody.exercise.domain.QExercise.*;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +25,7 @@ public class ExerciseQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	public Page<Exercise> findExercises(ExerciseFilterRequest filter, Pageable pageable) {
-		QueryResults<Exercise> results = queryFactory
-			.selectFrom(exercise)
+		QueryResults<Exercise> results = queryFactory.selectFrom(exercise)
 			.where(eq(filter))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -37,8 +38,13 @@ public class ExerciseQueryRepository {
 		if (filter.getBodyPart() == BodyPartType.NONE) {
 			return exercise.category.eq(filter.getCategory());
 		}
-
 		return exercise.bodyPart.eq(filter.getBodyPart())
 			.and(exercise.category.eq(filter.getCategory()));
+	}
+
+	public List<Exercise> findByIds(List<Long> ids) {
+		return queryFactory.selectFrom(exercise)
+			.where(exercise.id.in(ids))
+			.fetch();
 	}
 }

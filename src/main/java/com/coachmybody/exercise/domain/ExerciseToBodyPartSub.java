@@ -13,7 +13,6 @@ import lombok.Getter;
 @IdClass(ExerciseToBodyPartSubKey.class)
 @Entity
 public class ExerciseToBodyPartSub {
-
 	@Id
 	@JoinColumn(name = "exercise_id", nullable = false)
 	@ManyToOne(fetch = FetchType.EAGER)
