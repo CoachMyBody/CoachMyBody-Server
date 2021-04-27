@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.coachmybody.exercise.domain.Exercise;
+import com.coachmybody.exercise.domain.ExerciseLab;
 import com.coachmybody.exercise.domain.ExerciseToMuscle;
 import com.coachmybody.exercise.domain.Muscle;
 import com.coachmybody.exercise.type.BodyPartSubType;
@@ -38,8 +39,17 @@ public class ExerciseDetailResponse {
 	@ApiModelProperty(value = "상세 그룹", example = "복부, 다리", required = true)
 	List<BodyPartSubType> bodyPartSubs;
 
-	@ApiModelProperty(value = "적용 근육")
+	@ApiModelProperty(value = "횟수", example = "15")
+	Integer exerciseLab;
+
+	@ApiModelProperty(value = "세트", example = "4")
+	Integer exerciseSet;
+
+	@ApiModelProperty(value = "적용 근육", example = "[TRAPEZIUS, LATISSIMUS_DORSI]", required = true)
 	List<MuscleType> muscles;
+
+	@ApiModelProperty(value = "연관 운동", example = "[DEAD_LIFT, SHOULDER_PRESS]")
+	List<ExerciseSimpleResponse> relatedExercises;
 
 	public static ExerciseDetailResponse of(Exercise exercise) {
 		List<Muscle> muscleList = exercise.getExerciseToMuscleList()
@@ -56,6 +66,8 @@ public class ExerciseDetailResponse {
 			.map(Muscle::getName)
 			.collect(Collectors.toList());
 
+		ExerciseLab exerciseLab = exercise.getExerciseLab();
+
 		return ExerciseDetailResponse.builder()
 			.id(exercise.getId())
 			.name(exercise.getName())
@@ -63,6 +75,8 @@ public class ExerciseDetailResponse {
 			.category(exercise.getCategory())
 			.bodyPart(exercise.getBodyPart())
 			.bodyPartSubs(bodyPartSubs)
+			.exerciseLab(exerciseLab.getExerciseLab() == null ? 0 : exerciseLab.getExerciseLab())
+			.exerciseSet(exerciseLab.getExerciseSet() == null ? 0 : exerciseLab.getExerciseSet())
 			.muscles(muscles)
 			.build();
 	}

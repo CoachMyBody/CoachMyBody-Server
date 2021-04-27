@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.coachmybody.exercise.type.BodyPartType;
 import com.coachmybody.exercise.type.ExerciseCategoryType;
@@ -37,6 +38,9 @@ public class Exercise {
 	private String description;
 
 	private String caution;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "exercise")
+	private ExerciseLab exerciseLab;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "exercise", cascade = CascadeType.ALL)
 	private List<ExerciseToMuscle> exerciseToMuscleList;
