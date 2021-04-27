@@ -4,15 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum BodyPartType {
-	FULL_BODY("FULL_BODY", "전신"),
-	UPPER_BODY("UPPER_BODY", "상체"),
-	LOWER_BODY("LOWER_BODY", "하체");
+	FULL_BODY("전신"),
+	UPPER_BODY("상체"),
+	LOWER_BODY("하체"),
+	NONE("전체");
 
 	private String name;
-	private String ko;
 
-	BodyPartType(String name, String ko) {
+	BodyPartType(String name) {
 		this.name = name;
-		this.ko = ko;
 	}
 }

@@ -10,38 +10,28 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
-import com.coachmybody.exercise.type.BodyPartType;
-import com.coachmybody.exercise.type.ExerciseCategoryType;
+import com.coachmybody.exercise.type.MuscleType;
 
 import lombok.Getter;
 
 @Getter
 @Entity
-public class Exercise {
+public class Muscle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String name;
-
 	@Enumerated(value = EnumType.STRING)
-	private ExerciseCategoryType category;
+	private MuscleType name;
 
-	@Enumerated(value = EnumType.STRING)
-	private BodyPartType bodyPart;
+	@JoinColumn(name = "body_part_sub_id", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	private BodyPartSub bodyPartSub;
 
-	private String imageUri;
-
-	private String description;
-
-	private String caution;
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "exercise")
-	private ExerciseLab exerciseLab;
-
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "exercise", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "muscle", cascade = CascadeType.ALL)
 	private List<ExerciseToMuscle> exerciseToMuscleList;
 }
