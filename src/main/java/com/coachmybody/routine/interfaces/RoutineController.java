@@ -23,6 +23,7 @@ import com.coachmybody.common.dto.ProblemResponse;
 import com.coachmybody.routine.application.RoutineService;
 import com.coachmybody.routine.interfaces.dto.RoutineCreateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
+import com.coachmybody.routine.interfaces.dto.RoutineExerciseAddRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
 import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.domain.User;
@@ -48,7 +49,7 @@ public class RoutineController {
 		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/routine")
+	@PostMapping("/routines")
 	public void create(@RequestHeader HttpHeaders headers,
 		@RequestBody @Valid RoutineCreateRequest request) {
 
@@ -64,7 +65,7 @@ public class RoutineController {
 		@ApiResponse(code = 200, message = "나의 루틴 리스트 조회 성공")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/users/routine")
+	@GetMapping("/users/routines")
 	public List<RoutineSimpleResponse> myRoutine(@RequestHeader HttpHeaders headers) {
 		HeaderDto headerDto = HeaderDto.of(headers);
 
@@ -79,7 +80,7 @@ public class RoutineController {
 		@ApiResponse(code = 404, message = "존재하지 않는 루틴")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/routine/{routineId}")
+	@GetMapping("/routines/{routineId}")
 	public ResponseEntity<RoutineDetailResponse> findRoutineById(@PathVariable("routineId") Long routineId) {
 		return ResponseEntity.ok(routineService.findRoutineById(routineId));
 	}
@@ -104,7 +105,7 @@ public class RoutineController {
 		@ApiResponse(code = 406, message = "접근할 수 없는 루틴")
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@DeleteMapping("/routine")
+	@DeleteMapping("/routines")
 	public void delete(@RequestHeader HttpHeaders headers,
 		@RequestParam(value = "routineIds") List<Long> routineIds) {
 		HeaderDto headerDto = HeaderDto.of(headers);
@@ -112,5 +113,19 @@ public class RoutineController {
 		User user = userService.findByToken(headerDto.getToken());
 
 		routineService.deleteByIds(routineIds, user.getId());
+	}
+
+	@ApiOperation("루틴 운동 추가")
+	@ApiResponses(value = {
+		@ApiResponse(code = 201, message = "루틴 운동 추가 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류")
+	})
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/routines/{routineId}/exercises")
+	public void addRoutineExercises(@RequestHeader HttpHeaders headers,
+		@PathVariable("routineId") Long routineId,
+		@RequestBody @Valid RoutineExerciseAddRequest request) {
+		routineService.addExercises(routineId, request.getExerciseIds());
 	}
 }

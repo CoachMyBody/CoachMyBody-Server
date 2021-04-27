@@ -1,5 +1,6 @@
 package com.coachmybody.routine.application;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -10,7 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.coachmybody.common.exception.NotAcceptableException;
+import com.coachmybody.exercise.domain.Exercise;
+import com.coachmybody.exercise.domain.repository.ExerciseQueryRepository;
 import com.coachmybody.routine.domain.Routine;
+import com.coachmybody.routine.domain.RoutineExercise;
+import com.coachmybody.routine.domain.repository.RoutineExerciseRepository;
 import com.coachmybody.routine.domain.repository.RoutineQueryRepository;
 import com.coachmybody.routine.domain.repository.RoutineRepository;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
@@ -25,6 +30,8 @@ public class RoutineService {
 
 	private final RoutineRepository routineRepository;
 	private final RoutineQueryRepository routineQueryRepository;
+	private final RoutineExerciseRepository routineExerciseRepository;
+	private final ExerciseQueryRepository exerciseQueryRepository;
 
 	@Transactional
 	public void create(String title, User user) {
@@ -62,5 +69,35 @@ public class RoutineService {
 		});
 
 		routineRepository.deleteAll(routines);
+	}
+
+	@Transactional
+	public void addExercises(final long routineId, List<Long> exerciseIds) {
+		Routine routine = routineRepository.findById(routineId)
+			.orElseThrow(EntityNotFoundException::new);
+
+		List<Exercise> exercises = exerciseQueryRepository.findByIds(exerciseIds);
+
+		List<RoutineExercise> routineExercises = routine.getExercises()
+			.stream()
+			.sorted(Comparator.comparing(RoutineExercise::getPriority))
+			.collect(Collectors.toList());
+
+
+		int prePriority = 0;
+		if (routineExercises.size() > 0) {
+			int routineExercisesSize = routineExercises.size();
+			prePriority = routineExercises.get(routineExercisesSize - 1).getPriority() + 1;
+		}
+		int finalPrePriority = prePriority;
+
+		exercises.forEach(exercise -> {
+			RoutineExercise routineExercise = RoutineExercise.builder()
+				.routine(routine)
+				.exercise(exercise)
+				.priority(exercises.indexOf(exercise) + finalPrePriority)
+				.build();
+			routineExerciseRepository.save(routineExercise);
+		});
 	}
 }
