@@ -22,6 +22,7 @@ import com.coachmybody.common.dto.HeaderDto;
 import com.coachmybody.common.dto.ProblemResponse;
 import com.coachmybody.routine.application.RoutineService;
 import com.coachmybody.routine.interfaces.dto.RoutineCreateRequest;
+import com.coachmybody.routine.interfaces.dto.RoutineDeleteRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseAddRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
@@ -39,7 +40,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1")
 @RestController
 public class RoutineController {
-
 	private final RoutineService routineService;
 	private final UserService userService;
 
@@ -66,12 +66,13 @@ public class RoutineController {
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/users/routines")
-	public List<RoutineSimpleResponse> myRoutine(@RequestHeader HttpHeaders headers) {
+	public List<RoutineSimpleResponse> myRoutine(@RequestHeader HttpHeaders headers,
+		@RequestParam(value = "hasExercise", required = false) boolean hasExercise) {
 		HeaderDto headerDto = HeaderDto.of(headers);
 
 		User user = userService.findByToken(headerDto.getToken());
 
-		return routineService.findMyRoutine(user);
+		return routineService.findMyRoutine(user, hasExercise);
 	}
 
 	@ApiOperation("루틴 상세 조회")
@@ -107,12 +108,12 @@ public class RoutineController {
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/routines")
 	public void delete(@RequestHeader HttpHeaders headers,
-		@RequestParam(value = "routineIds") List<Long> routineIds) {
+		@RequestBody @Valid RoutineDeleteRequest request) {
 		HeaderDto headerDto = HeaderDto.of(headers);
 
 		User user = userService.findByToken(headerDto.getToken());
 
-		routineService.deleteByIds(routineIds, user.getId());
+		routineService.deleteByIds(request.getRoutineIds(), user.getId());
 	}
 
 	@ApiOperation("루틴 운동 추가")
