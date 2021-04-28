@@ -42,10 +42,16 @@ public class RoutineService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<RoutineSimpleResponse> findMyRoutine(User user) {
+	public List<RoutineSimpleResponse> findMyRoutine(User user, boolean hasExercise) {
 		return routineRepository.findAllByUser(user)
 			.stream()
 			.map(RoutineSimpleResponse::of)
+			.filter(routineSimpleResponse -> {
+				if (hasExercise) {
+					return routineSimpleResponse.getExerciseCount() > 0;
+				}
+				return true;
+			})
 			.collect(Collectors.toList());
 	}
 
@@ -82,7 +88,6 @@ public class RoutineService {
 			.stream()
 			.sorted(Comparator.comparing(RoutineExercise::getPriority))
 			.collect(Collectors.toList());
-
 
 		int prePriority = 0;
 		if (routineExercises.size() > 0) {
