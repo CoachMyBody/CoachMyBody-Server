@@ -14,7 +14,7 @@ import lombok.Value;
 @Value
 public class RegisterRequest {
 
-	@ApiModelProperty(value = "아이디", required = true)
+	@ApiModelProperty(value = "소셜 아이디", required = true)
 	@NotNull(message = "The socialId must not be Null")
 	String socialId;
 
