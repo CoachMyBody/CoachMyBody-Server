@@ -53,4 +53,8 @@ public class RoutineExercise {
 		this.exerciseLab = request.getExerciseLab();
 		this.exerciseSet = request.getExerciseSet();
 	}
+
+	public void updatePriority(int priority) {
+		this.priority = priority;
+	}
 }

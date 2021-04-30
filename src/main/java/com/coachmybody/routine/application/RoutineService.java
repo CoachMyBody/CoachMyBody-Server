@@ -134,4 +134,13 @@ public class RoutineService {
 	public void deleteExercises(List<Long> ids) {
 		routineExerciseQueryRepository.deleteAllByIds(ids);
 	}
+
+	@Transactional
+	public void updateRoutineExerciseOrder(List<Long> ids) {
+		ids.forEach(id -> {
+			RoutineExercise routineExercise = routineExerciseRepository.findById(id)
+				.orElseThrow(EntityNotFoundException::new);
+			routineExercise.updatePriority(ids.indexOf(id));
+		});
+	}
 }

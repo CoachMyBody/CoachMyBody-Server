@@ -3,6 +3,7 @@ package com.coachmybody.routine.interfaces.dto;
 import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.routine.domain.RoutineExercise;
 import com.coachmybody.routine.type.UnitType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,6 +35,9 @@ public class RoutineExerciseResponse {
 	@ApiModelProperty(value = "단위 값", example = "45.5")
 	Float unitValue;
 
+	@JsonIgnore
+	Integer priority;
+
 	public static RoutineExerciseResponse of(RoutineExercise routineExercise) {
 		Exercise exercise = routineExercise.getExercise();
 
@@ -45,6 +49,7 @@ public class RoutineExerciseResponse {
 			.exerciseSet(routineExercise.getExerciseSet())
 			.unit(routineExercise.getUnit())
 			.unitValue(routineExercise.getUnitValue())
+			.priority(routineExercise.getPriority())
 			.build();
 	}
 }

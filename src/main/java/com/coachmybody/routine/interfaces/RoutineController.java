@@ -27,9 +27,9 @@ import com.coachmybody.routine.interfaces.dto.RoutineDeleteRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseAddRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseDeleteRequest;
+import com.coachmybody.routine.interfaces.dto.RoutineExerciseOrderRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
-import com.coachmybody.routine.interfaces.dto.RoutineUpdateRequest;
 import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.domain.User;
 
@@ -121,7 +121,7 @@ public class RoutineController {
 		routineService.addExercises(routineId, request.getExerciseIds());
 	}
 
-	@ApiOperation("루틴명 수정")
+	@ApiOperation("루틴 이름 변경")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "루틴명 수정 성공"),
 		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
@@ -145,7 +145,19 @@ public class RoutineController {
 		@RequestBody @Valid RoutineExerciseDeleteRequest request) {
 		routineService.deleteExercises(request.getRoutineExerciseIds());
 	}
-	
+
+	@ApiOperation("루틴 운동 순서 편집")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴 운동 순서 편집 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PatchMapping("/routines/exercises/order")
+	public void updateOrder(@RequestHeader HttpHeaders headers,
+		@RequestBody @Valid RoutineExerciseOrderRequest request) {
+		routineService.updateRoutineExerciseOrder(request.getRoutineExerciseIds());
+	}
+
 	@ApiOperation("루틴 운동 횟수 수정")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "루틴 운동 편집 성공"),

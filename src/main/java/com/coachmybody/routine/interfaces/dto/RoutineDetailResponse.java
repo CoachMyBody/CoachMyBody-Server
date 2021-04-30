@@ -1,5 +1,6 @@
 package com.coachmybody.routine.interfaces.dto;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ public class RoutineDetailResponse {
 			.title(routine.getTitle())
 			.exercises(routine.getExercises().stream()
 				.map(RoutineExerciseResponse::of)
+				.sorted(Comparator.comparing(RoutineExerciseResponse::getPriority))
 				.collect(Collectors.toList()))
 			.build();
 	}
