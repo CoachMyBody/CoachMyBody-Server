@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.coachmybody.common.exception.NotAcceptableException;
 import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.exercise.domain.ExerciseLab;
-import com.coachmybody.exercise.domain.repository.ExerciseQueryRepository;
+import com.coachmybody.exercise.domain.repository.ExerciseRepository;
 import com.coachmybody.routine.domain.Routine;
 import com.coachmybody.routine.domain.RoutineExercise;
+import com.coachmybody.routine.domain.repository.RoutineExerciseQueryRepository;
 import com.coachmybody.routine.domain.repository.RoutineExerciseRepository;
-import com.coachmybody.routine.domain.repository.RoutineQueryRepository;
 import com.coachmybody.routine.domain.repository.RoutineRepository;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
@@ -32,9 +32,9 @@ import lombok.RequiredArgsConstructor;
 public class RoutineService {
 
 	private final RoutineRepository routineRepository;
-	private final RoutineQueryRepository routineQueryRepository;
+	private final ExerciseRepository exerciseRepository;
 	private final RoutineExerciseRepository routineExerciseRepository;
-	private final ExerciseQueryRepository exerciseQueryRepository;
+	private final RoutineExerciseQueryRepository routineExerciseQueryRepository;
 
 	@Transactional
 	public void create(String title, User user) {
@@ -68,7 +68,7 @@ public class RoutineService {
 
 	@Transactional
 	public void deleteByIds(List<Long> routineIds, UUID userId) {
-		List<Routine> routines = routineQueryRepository.findByIds(routineIds);
+		List<Routine> routines = routineRepository.findAllById(routineIds);
 
 		routines.forEach(routine -> {
 			UUID routineUserId = routine.getUser().getId();
@@ -85,7 +85,7 @@ public class RoutineService {
 		Routine routine = routineRepository.findById(routineId)
 			.orElseThrow(EntityNotFoundException::new);
 
-		List<Exercise> exercises = exerciseQueryRepository.findByIds(exerciseIds);
+		List<Exercise> exercises = exerciseRepository.findAllById(exerciseIds);
 
 		List<RoutineExercise> routineExercises = routine.getExercises()
 			.stream()
@@ -128,5 +128,10 @@ public class RoutineService {
 			.orElseThrow(EntityNotFoundException::new);
 
 		routine.updateTitle(newTitle);
+	}
+
+	@Transactional
+	public void deleteExercises(List<Long> ids) {
+		routineExerciseQueryRepository.deleteAllByIds(ids);
 	}
 }

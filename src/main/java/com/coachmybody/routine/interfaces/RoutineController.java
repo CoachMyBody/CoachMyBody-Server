@@ -26,6 +26,7 @@ import com.coachmybody.routine.interfaces.dto.RoutineCreateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineDeleteRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseAddRequest;
+import com.coachmybody.routine.interfaces.dto.RoutineExerciseDeleteRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineUpdateRequest;
@@ -126,27 +127,26 @@ public class RoutineController {
 		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
-	@PatchMapping("/routine/{routineId}/title")
+	@PatchMapping("/routines/{routineId}/title")
 	public void updateName(@RequestHeader HttpHeaders headers,
 		@PathVariable("routineId") Long routineId,
 		@RequestParam String newTitle) {
 		routineService.updateTitle(routineId, newTitle);
 	}
 
-	// @ApiOperation("루틴 수정")
-	// @ApiResponses(value = {
-	// 	@ApiResponse(code = 200, message = "루틴 편집 성공"),
-	// 	@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
-	// })
-	// @ResponseStatus(HttpStatus.OK)
-	// @PostMapping("/routine/{routineId}")
-	// public void update(@RequestHeader HttpHeaders headers,
-	// 	@PathVariable("routineId") Long routineId,
-	// 	@RequestBody @Valid RoutineUpdateRequest request) {
-	//
-	// }
-
-	@ApiOperation("루틴 운동 편집")
+	@ApiOperation("루틴 운동 삭제")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴 운동 삭제 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/routines/exercises")
+	public void deleteRoutineExercises(@RequestHeader HttpHeaders headers,
+		@RequestBody @Valid RoutineExerciseDeleteRequest request) {
+		routineService.deleteExercises(request.getRoutineExerciseIds());
+	}
+	
+	@ApiOperation("루틴 운동 횟수 수정")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "루틴 운동 편집 성공"),
 		@ApiResponse(code = 404, message = "존재하지 않는 운동", response = ProblemResponse.class),
