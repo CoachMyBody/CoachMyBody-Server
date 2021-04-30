@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @Api(tags = {"Exercise"})
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/exercise")
+@RequestMapping("/api/v1/exercises")
 @RestController
 public class ExerciseController {
 
