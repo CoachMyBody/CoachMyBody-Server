@@ -1,9 +1,9 @@
 package com.coachmybody.routine.interfaces.dto;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.coachmybody.exercise.interfaces.dto.ExerciseSimpleResponse;
 import com.coachmybody.routine.domain.Routine;
 
 import io.swagger.annotations.ApiModel;
@@ -22,14 +22,15 @@ public class RoutineDetailResponse {
 	String title;
 
 	@ApiModelProperty(value = "운동 리스트")
-	List<ExerciseSimpleResponse> exercises;
+	List<RoutineExerciseResponse> exercises;
 
 	public static RoutineDetailResponse of(Routine routine) {
 		return RoutineDetailResponse.builder()
 			.id(routine.getId())
 			.title(routine.getTitle())
 			.exercises(routine.getExercises().stream()
-				.map(routineExercise -> ExerciseSimpleResponse.of(routineExercise.getExercise()))
+				.map(RoutineExerciseResponse::of)
+				.sorted(Comparator.comparing(RoutineExerciseResponse::getPriority))
 				.collect(Collectors.toList()))
 			.build();
 	}

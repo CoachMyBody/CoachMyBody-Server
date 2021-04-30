@@ -38,4 +38,8 @@ public class Routine {
 		this.title = title;
 		this.user = user;
 	}
+
+	public void updateTitle(String newTitle) {
+		this.title = newTitle;
+	}
 }

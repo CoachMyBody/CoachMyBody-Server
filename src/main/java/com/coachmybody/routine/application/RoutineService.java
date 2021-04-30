@@ -12,14 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.coachmybody.common.exception.NotAcceptableException;
 import com.coachmybody.exercise.domain.Exercise;
-import com.coachmybody.exercise.domain.repository.ExerciseQueryRepository;
+import com.coachmybody.exercise.domain.ExerciseLab;
+import com.coachmybody.exercise.domain.repository.ExerciseRepository;
 import com.coachmybody.routine.domain.Routine;
 import com.coachmybody.routine.domain.RoutineExercise;
+import com.coachmybody.routine.domain.repository.RoutineExerciseQueryRepository;
 import com.coachmybody.routine.domain.repository.RoutineExerciseRepository;
-import com.coachmybody.routine.domain.repository.RoutineQueryRepository;
 import com.coachmybody.routine.domain.repository.RoutineRepository;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
+import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
+import com.coachmybody.routine.type.UnitType;
 import com.coachmybody.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -29,9 +32,9 @@ import lombok.RequiredArgsConstructor;
 public class RoutineService {
 
 	private final RoutineRepository routineRepository;
-	private final RoutineQueryRepository routineQueryRepository;
+	private final ExerciseRepository exerciseRepository;
 	private final RoutineExerciseRepository routineExerciseRepository;
-	private final ExerciseQueryRepository exerciseQueryRepository;
+	private final RoutineExerciseQueryRepository routineExerciseQueryRepository;
 
 	@Transactional
 	public void create(String title, User user) {
@@ -42,10 +45,16 @@ public class RoutineService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<RoutineSimpleResponse> findMyRoutine(User user) {
+	public List<RoutineSimpleResponse> findMyRoutine(User user, boolean hasExercise) {
 		return routineRepository.findAllByUser(user)
 			.stream()
 			.map(RoutineSimpleResponse::of)
+			.filter(routineSimpleResponse -> {
+				if (hasExercise) {
+					return routineSimpleResponse.getExerciseCount() > 0;
+				}
+				return true;
+			})
 			.collect(Collectors.toList());
 	}
 
@@ -59,7 +68,7 @@ public class RoutineService {
 
 	@Transactional
 	public void deleteByIds(List<Long> routineIds, UUID userId) {
-		List<Routine> routines = routineQueryRepository.findByIds(routineIds);
+		List<Routine> routines = routineRepository.findAllById(routineIds);
 
 		routines.forEach(routine -> {
 			UUID routineUserId = routine.getUser().getId();
@@ -76,13 +85,12 @@ public class RoutineService {
 		Routine routine = routineRepository.findById(routineId)
 			.orElseThrow(EntityNotFoundException::new);
 
-		List<Exercise> exercises = exerciseQueryRepository.findByIds(exerciseIds);
+		List<Exercise> exercises = exerciseRepository.findAllById(exerciseIds);
 
 		List<RoutineExercise> routineExercises = routine.getExercises()
 			.stream()
 			.sorted(Comparator.comparing(RoutineExercise::getPriority))
 			.collect(Collectors.toList());
-
 
 		int prePriority = 0;
 		if (routineExercises.size() > 0) {
@@ -92,12 +100,47 @@ public class RoutineService {
 		int finalPrePriority = prePriority;
 
 		exercises.forEach(exercise -> {
+			ExerciseLab exerciseLab = exercise.getExerciseLab();
 			RoutineExercise routineExercise = RoutineExercise.builder()
 				.routine(routine)
 				.exercise(exercise)
+				.exerciseLab(exerciseLab.getExerciseLab())
+				.exerciseSet(exerciseLab.getExerciseSet())
+				.unitValue(0f)
+				.unit(UnitType.KG)
 				.priority(exercises.indexOf(exercise) + finalPrePriority)
 				.build();
 			routineExerciseRepository.save(routineExercise);
+		});
+	}
+
+	@Transactional
+	public void updateRoutineExercise(final long id, RoutineExerciseUpdateRequest request) {
+		RoutineExercise routineExercise = routineExerciseRepository.findById(id)
+			.orElseThrow(EntityNotFoundException::new);
+
+		routineExercise.updateLabSet(request);
+	}
+
+	@Transactional
+	public void updateTitle(final long routineId, final String newTitle) {
+		Routine routine = routineRepository.findById(routineId)
+			.orElseThrow(EntityNotFoundException::new);
+
+		routine.updateTitle(newTitle);
+	}
+
+	@Transactional
+	public void deleteExercises(List<Long> ids) {
+		routineExerciseQueryRepository.deleteAllByIds(ids);
+	}
+
+	@Transactional
+	public void updateRoutineExerciseOrder(List<Long> ids) {
+		ids.forEach(id -> {
+			RoutineExercise routineExercise = routineExerciseRepository.findById(id)
+				.orElseThrow(EntityNotFoundException::new);
+			routineExercise.updatePriority(ids.indexOf(id));
 		});
 	}
 }
