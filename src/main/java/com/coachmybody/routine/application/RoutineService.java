@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.coachmybody.common.exception.NotAcceptableException;
 import com.coachmybody.exercise.domain.Exercise;
+import com.coachmybody.exercise.domain.ExerciseLab;
 import com.coachmybody.exercise.domain.repository.ExerciseQueryRepository;
 import com.coachmybody.routine.domain.Routine;
 import com.coachmybody.routine.domain.RoutineExercise;
@@ -19,7 +20,9 @@ import com.coachmybody.routine.domain.repository.RoutineExerciseRepository;
 import com.coachmybody.routine.domain.repository.RoutineQueryRepository;
 import com.coachmybody.routine.domain.repository.RoutineRepository;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
+import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
+import com.coachmybody.routine.type.UnitType;
 import com.coachmybody.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -97,12 +100,25 @@ public class RoutineService {
 		int finalPrePriority = prePriority;
 
 		exercises.forEach(exercise -> {
+			ExerciseLab exerciseLab = exercise.getExerciseLab();
 			RoutineExercise routineExercise = RoutineExercise.builder()
 				.routine(routine)
 				.exercise(exercise)
+				.exerciseLab(exerciseLab.getExerciseLab())
+				.exerciseSet(exerciseLab.getExerciseSet())
+				.unitValue(0f)
+				.unit(UnitType.KG)
 				.priority(exercises.indexOf(exercise) + finalPrePriority)
 				.build();
 			routineExerciseRepository.save(routineExercise);
 		});
+	}
+
+	@Transactional
+	public void updateRoutineExercise(final long id, RoutineExerciseUpdateRequest request) {
+		RoutineExercise routineExercise = routineExerciseRepository.findById(id)
+			.orElseThrow(EntityNotFoundException::new);
+
+		routineExercise.updateLabSet(request);
 	}
 }

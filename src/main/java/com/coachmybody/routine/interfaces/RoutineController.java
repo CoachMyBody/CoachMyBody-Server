@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import com.coachmybody.routine.interfaces.dto.RoutineCreateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineDeleteRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseAddRequest;
+import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
 import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.domain.User;
@@ -78,7 +80,7 @@ public class RoutineController {
 	@ApiOperation("루틴 상세 조회")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "루틴 상세 조회 성공"),
-		@ApiResponse(code = 404, message = "존재하지 않는 루틴")
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/routines/{routineId}")
@@ -86,24 +88,11 @@ public class RoutineController {
 		return ResponseEntity.ok(routineService.findRoutineById(routineId));
 	}
 
-	// @ApiOperation("내 루틴 편집")
-	// @ApiResponses(value = {
-	// 	@ApiResponse(code = 200, message = "루틴 편집 성공"),
-	// 	@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
-	// })
-	// @ResponseStatus(HttpStatus.OK)
-	// @PostMapping("/routine/{routineId}")
-	// public void update(@RequestHeader HttpHeaders headers,
-	// 	@PathVariable("routineId") Long routineId,
-	// 	@RequestBody @Valid RoutineUpdateRequest request) {
-	//
-	// }
-
-	@ApiOperation("나의 루틴 삭제")
+	@ApiOperation("루틴 삭제")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "루틴 삭제 성공"),
-		@ApiResponse(code = 404, message = "존재하지 않는 루틴"),
-		@ApiResponse(code = 406, message = "접근할 수 없는 루틴")
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class),
+		@ApiResponse(code = 406, message = "접근할 수 없는 루틴", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/routines")
@@ -119,8 +108,8 @@ public class RoutineController {
 	@ApiOperation("루틴 운동 추가")
 	@ApiResponses(value = {
 		@ApiResponse(code = 201, message = "루틴 운동 추가 성공"),
-		@ApiResponse(code = 404, message = "존재하지 않는 루틴"),
-		@ApiResponse(code = 400, message = "요청 프로퍼티 오류")
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/routines/{routineId}/exercises")
@@ -128,5 +117,32 @@ public class RoutineController {
 		@PathVariable("routineId") Long routineId,
 		@RequestBody @Valid RoutineExerciseAddRequest request) {
 		routineService.addExercises(routineId, request.getExerciseIds());
+	}
+
+	// @ApiOperation("루틴 수정")
+	// @ApiResponses(value = {
+	// 	@ApiResponse(code = 200, message = "루틴 편집 성공"),
+	// 	@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
+	// })
+	// @ResponseStatus(HttpStatus.OK)
+	// @PostMapping("/routine/{routineId}")
+	// public void update(@RequestHeader HttpHeaders headers,
+	// 	@PathVariable("routineId") Long routineId,
+	// 	@RequestBody @Valid RoutineUpdateRequest request) {
+	//
+	// }
+
+	@ApiOperation("루틴 운동 편집")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴 운동 편집 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 운동", response = ProblemResponse.class),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PatchMapping("/routines/exercises/{routineExerciseId}")
+	public void updateRoutineExercise(@RequestHeader HttpHeaders headers,
+		@PathVariable("routineExerciseId") Long routineExerciseId,
+		@RequestBody RoutineExerciseUpdateRequest request) {
+		routineService.updateRoutineExercise(routineExerciseId, request);
 	}
 }

@@ -11,7 +11,6 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.Type;
 
-import com.coachmybody.common.util.UuidUtils;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 import com.coachmybody.user.type.LoginType;
 
