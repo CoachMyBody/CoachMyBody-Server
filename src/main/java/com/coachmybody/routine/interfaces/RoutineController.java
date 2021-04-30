@@ -28,6 +28,7 @@ import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseAddRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
+import com.coachmybody.routine.interfaces.dto.RoutineUpdateRequest;
 import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.domain.User;
 
@@ -117,6 +118,19 @@ public class RoutineController {
 		@PathVariable("routineId") Long routineId,
 		@RequestBody @Valid RoutineExerciseAddRequest request) {
 		routineService.addExercises(routineId, request.getExerciseIds());
+	}
+
+	@ApiOperation("루틴명 수정")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴명 수정 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PatchMapping("/routine/{routineId}/title")
+	public void updateName(@RequestHeader HttpHeaders headers,
+		@PathVariable("routineId") Long routineId,
+		@RequestParam String newTitle) {
+		routineService.updateTitle(routineId, newTitle);
 	}
 
 	// @ApiOperation("루틴 수정")

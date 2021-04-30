@@ -121,4 +121,12 @@ public class RoutineService {
 
 		routineExercise.updateLabSet(request);
 	}
+
+	@Transactional
+	public void updateTitle(final long routineId, final String newTitle) {
+		Routine routine = routineRepository.findById(routineId)
+			.orElseThrow(EntityNotFoundException::new);
+
+		routine.updateTitle(newTitle);
+	}
 }
