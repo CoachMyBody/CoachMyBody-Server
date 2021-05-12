@@ -18,13 +18,13 @@ public class ExerciseTimeDto {
 	public ExerciseTimeDto(ExerciseTime exerciseTime) {
 		if (exerciseTime instanceof ExerciseTimeSet) {
 			this.type = ExerciseTimeType.TIME_SET;
-			this.exerciseMinutes = ((ExerciseTimeSet) exerciseTime).getExerciseMinutes();
-			this.exerciseSeconds = ((ExerciseTimeSet) exerciseTime).getExerciseSeconds();
-			this.exerciseSet = ((ExerciseTimeSet) exerciseTime).getExerciseSet();
+			this.exerciseMinutes = ((ExerciseTimeSet)exerciseTime).getExerciseMinutes();
+			this.exerciseSeconds = ((ExerciseTimeSet)exerciseTime).getExerciseSeconds();
+			this.exerciseSet = ((ExerciseTimeSet)exerciseTime).getExerciseSet();
 		} else if (exerciseTime instanceof ExerciseLabSet) {
 			this.type = ExerciseTimeType.LAB_SET;
-			this.exerciseLab = ((ExerciseLabSet) exerciseTime).getExerciseLab();
-			this.exerciseLab = ((ExerciseLabSet) exerciseTime).getExerciseSet();
+			this.exerciseLab = ((ExerciseLabSet)exerciseTime).getExerciseLab();
+			this.exerciseLab = ((ExerciseLabSet)exerciseTime).getExerciseSet();
 		}
 	}
 }

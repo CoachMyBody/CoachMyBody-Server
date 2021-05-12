@@ -43,7 +43,7 @@ public class ExerciseController {
 	public PageResponse<ExerciseSimpleResponse> findExercise(@RequestParam ExerciseCategoryType category,
 		@RequestParam(required = false, defaultValue = "NONE") BodyPartType bodyPart,
 		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "50") int size) {
+		@RequestParam(required = false, defaultValue = "20") int size) {
 
 		PageRequest pageRequest = PageRequest.of(page, size);
 

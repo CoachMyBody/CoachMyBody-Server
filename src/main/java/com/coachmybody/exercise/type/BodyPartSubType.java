@@ -4,13 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum BodyPartSubType {
-	BACK("등"),
-	SHOULDER("어깨"),
+	SHOULDERS("어깨"),
 	CHEST("가슴"),
+	BACK("등"),
+	ARMS("팔"),
 	ABS("복부"),
-	ARM("팔"),
 	HIP("엉덩이"),
-	LEG("다리");
+	LEGS("다리");
 
 	private String name;
 

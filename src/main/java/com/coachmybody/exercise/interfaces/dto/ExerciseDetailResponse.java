@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.coachmybody.exercise.domain.Exercise;
-import com.coachmybody.exercise.domain.ExerciseTime;
 import com.coachmybody.exercise.domain.ExerciseToMuscle;
 import com.coachmybody.exercise.domain.Muscle;
 import com.coachmybody.exercise.type.BodyPartSubType;

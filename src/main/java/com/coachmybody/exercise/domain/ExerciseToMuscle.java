@@ -15,11 +15,11 @@ import lombok.Getter;
 public class ExerciseToMuscle {
 	@Id
 	@JoinColumn(name = "exercise_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Exercise exercise;
 
 	@Id
 	@JoinColumn(name = "muscle_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Muscle muscle;
 }

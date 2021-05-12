@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.coachmybody.common.exception.NotAcceptableException;
 import com.coachmybody.exercise.domain.Exercise;
-import com.coachmybody.exercise.domain.ExerciseTime;
 import com.coachmybody.exercise.domain.repository.ExerciseRepository;
 import com.coachmybody.routine.domain.Routine;
 import com.coachmybody.routine.domain.RoutineExercise;
