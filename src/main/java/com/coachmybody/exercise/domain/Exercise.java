@@ -1,6 +1,6 @@
 package com.coachmybody.exercise.domain;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -39,9 +39,9 @@ public class Exercise {
 
 	private String caution;
 
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "exercise")
-	private ExerciseLab exerciseLab;
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
+	private ExerciseTime exerciseTime;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "exercise", cascade = CascadeType.ALL)
-	private List<ExerciseToMuscle> exerciseToMuscleList;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
+	private Set<ExerciseToMuscle> exerciseToMuscles;
 }
