@@ -24,7 +24,7 @@ public class ExerciseTimeDto {
 		} else if (exerciseTime instanceof ExerciseLabSet) {
 			this.type = ExerciseTimeType.LAB_SET;
 			this.exerciseLab = ((ExerciseLabSet)exerciseTime).getExerciseLab();
-			this.exerciseLab = ((ExerciseLabSet)exerciseTime).getExerciseSet();
+			this.exerciseSet = ((ExerciseLabSet)exerciseTime).getExerciseSet();
 		}
 	}
 }
