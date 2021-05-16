@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @DiscriminatorValue("TIME_SET")
 @Entity
-public class ExerciseTimeSet extends ExerciseTime {
+public class ExerciseTimeSet extends ExerciseRecord {
 	@Column
 	private Integer exerciseMinutes;
 

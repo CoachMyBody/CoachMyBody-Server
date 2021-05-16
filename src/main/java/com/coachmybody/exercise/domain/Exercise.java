@@ -40,7 +40,7 @@ public class Exercise {
 	private String caution;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
-	private ExerciseTime exerciseTime;
+	private ExerciseRecord exerciseRecord;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
 	private Set<ExerciseToMuscle> exerciseToMuscles;

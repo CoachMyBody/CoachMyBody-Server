@@ -11,8 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.coachmybody.exercise.domain.Exercise;
+import com.coachmybody.exercise.type.ExerciseRecordType;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
-import com.coachmybody.routine.type.UnitType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +29,6 @@ public class RoutineExercise {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private Integer priority;
-
 	@JoinColumn(name = "exercise_id", nullable = false)
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Exercise exercise;
@@ -39,19 +37,30 @@ public class RoutineExercise {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Routine routine;
 
-	private Float unitValue;
+	private Integer priority;
 
 	@Enumerated(value = EnumType.STRING)
-	private UnitType unit;
+	private ExerciseRecordType recordType;
+
+	private Integer exerciseMinutes;
+
+	private Integer exerciseSeconds;
 
 	private Integer exerciseLab;
 
 	private Integer exerciseSet;
 
+	private Float exerciseWeight;
+
+	private Float exerciseDistance;
+
 	public void updateLabSet(RoutineExerciseUpdateRequest request) {
-		this.unitValue = request.getUnitValue();
+		this.exerciseMinutes = request.getExerciseMinutes();
+		this.exerciseSeconds = request.getExerciseSeconds();
 		this.exerciseLab = request.getExerciseLab();
 		this.exerciseSet = request.getExerciseSet();
+		this.exerciseWeight = request.getExerciseWeight();
+		this.exerciseDistance = request.getExerciseDistance();
 	}
 
 	public void updatePriority(int priority) {

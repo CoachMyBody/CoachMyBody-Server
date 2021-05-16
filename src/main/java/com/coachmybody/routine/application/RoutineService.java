@@ -12,7 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.coachmybody.common.exception.NotAcceptableException;
 import com.coachmybody.exercise.domain.Exercise;
+import com.coachmybody.exercise.domain.ExerciseLabSet;
+import com.coachmybody.exercise.domain.ExerciseRecord;
+import com.coachmybody.exercise.domain.ExerciseTimeSet;
 import com.coachmybody.exercise.domain.repository.ExerciseRepository;
+import com.coachmybody.exercise.type.ExerciseRecordType;
 import com.coachmybody.routine.domain.Routine;
 import com.coachmybody.routine.domain.RoutineExercise;
 import com.coachmybody.routine.domain.repository.RoutineExerciseQueryRepository;
@@ -21,7 +25,6 @@ import com.coachmybody.routine.domain.repository.RoutineRepository;
 import com.coachmybody.routine.interfaces.dto.RoutineDetailResponse;
 import com.coachmybody.routine.interfaces.dto.RoutineExerciseUpdateRequest;
 import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
-import com.coachmybody.routine.type.UnitType;
 import com.coachmybody.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -44,7 +47,7 @@ public class RoutineService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<RoutineSimpleResponse> findMyRoutine(User user, boolean hasExercise) {
+	public List<RoutineSimpleResponse> findMyRoutines(User user, boolean hasExercise) {
 		return routineRepository.findAllByUser(user)
 			.stream()
 			.map(RoutineSimpleResponse::of)
@@ -99,12 +102,32 @@ public class RoutineService {
 		int finalPrePriority = prePriority;
 
 		exercises.forEach(exercise -> {
+			ExerciseRecord exerciseRecord = exercise.getExerciseRecord();
+			ExerciseRecordType recordType = exerciseRecord.getType();
+
+			Integer exerciseLab = null, exerciseSet = null, exerciseMinutes = null, exerciseSeconds = null;
+
+			switch (recordType) {
+				case LAB_SET:
+					exerciseLab = ((ExerciseLabSet)exerciseRecord).getExerciseLab();
+					exerciseSet = ((ExerciseLabSet)exerciseRecord).getExerciseSet();
+					break;
+				case TIME_SET:
+					exerciseMinutes = ((ExerciseTimeSet)exerciseRecord).getExerciseMinutes();
+					exerciseSeconds = ((ExerciseTimeSet)exerciseRecord).getExerciseSeconds();
+					exerciseSet = ((ExerciseTimeSet)exerciseRecord).getExerciseSet();
+					break;
+			}
+
 			RoutineExercise routineExercise = RoutineExercise.builder()
 				.routine(routine)
 				.exercise(exercise)
-				.unitValue(0f)
-				.unit(UnitType.KG)
 				.priority(exercises.indexOf(exercise) + finalPrePriority)
+				.recordType(exerciseRecord.getType())
+				.exerciseLab(exerciseLab)
+				.exerciseSet(exerciseSet)
+				.exerciseMinutes(exerciseMinutes)
+				.exerciseSeconds(exerciseSeconds)
 				.build();
 			routineExerciseRepository.save(routineExercise);
 		});

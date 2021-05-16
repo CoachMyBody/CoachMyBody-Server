@@ -28,10 +28,10 @@ public class Routine {
 	private String title;
 
 	@JoinColumn(name = "user_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "routine", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "routine", cascade = CascadeType.ALL)
 	private List<RoutineExercise> exercises;
 
 	public Routine(String title, User user) {

@@ -70,13 +70,13 @@ public class RoutineController {
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/users/routines")
-	public List<RoutineSimpleResponse> myRoutine(@RequestHeader HttpHeaders headers,
+	public List<RoutineSimpleResponse> myRoutines(@RequestHeader HttpHeaders headers,
 		@RequestParam(value = "hasExercise", required = false) boolean hasExercise) {
 		HeaderDto headerDto = HeaderDto.of(headers);
 
 		User user = userService.findByToken(headerDto.getToken());
 
-		return routineService.findMyRoutine(user, hasExercise);
+		return routineService.findMyRoutines(user, hasExercise);
 	}
 
 	@ApiOperation("루틴 상세 조회")

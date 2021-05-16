@@ -69,7 +69,7 @@ public class ExerciseDetailResponse {
 			.category(exercise.getCategory())
 			.bodyPart(exercise.getBodyPart())
 			.bodyPartSubs(bodyPartSubs)
-			.exerciseTime(new ExerciseTimeDto(exercise.getExerciseTime()))
+			.exerciseTime(new ExerciseTimeDto(exercise.getExerciseRecord()))
 			.muscles(muscles)
 			.build();
 	}
