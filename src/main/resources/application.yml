@@ -47,3 +47,14 @@ logging:
     org:
       hibernate:
         SQL: debug
+
+---
+aws:
+  credential:
+    access-key: AKIAXHPHGEJTJKMXC5US
+    secret-key: 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
+  s3:
+    bucket: coach-my-body-s3
+    nunbody-dir: image/nunbody
+  cloudfront:
+    domain: d32fw0omjr2qmj.cloudfront.net
