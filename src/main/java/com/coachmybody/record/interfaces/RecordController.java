@@ -21,6 +21,7 @@ import com.coachmybody.common.dto.HeaderDto;
 import com.coachmybody.common.dto.ProblemResponse;
 import com.coachmybody.record.application.RecordService;
 import com.coachmybody.record.interfaces.dto.InbodyCreateRequest;
+import com.coachmybody.record.interfaces.dto.NunbodyCreateRequest;
 import com.coachmybody.record.interfaces.dto.RecordCreateRequest;
 import com.coachmybody.record.interfaces.dto.RecordDailyResponse;
 import com.coachmybody.record.interfaces.dto.RecordMonthlyResponse;
@@ -111,4 +112,19 @@ public class RecordController {
 		recordService.createInbody(user, request);
 	}
 
+	@ApiOperation("눈바디 기록")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "눈바디 기록 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class),
+		@ApiResponse(code = 409, message = "이미 존재하는 눈바디", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/nunbody")
+	public void createNunbody(@RequestHeader HttpHeaders headers,
+		@RequestBody @Valid NunbodyCreateRequest request) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		recordService.createNunbody(user, request);
+	}
 }

@@ -2,7 +2,6 @@ package com.coachmybody.record.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -46,14 +45,11 @@ public class Inbody {
 	private User user;
 
 	public static Inbody of(InbodyCreateRequest request, User user) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate date = LocalDate.parse(request.getDate(), formatter);
-
 		return Inbody.builder()
 			.weight(request.getWeight())
 			.skeletalMuscleMass(request.getSkeletalMuscleMass())
 			.bodyFatMass(request.getBodyFatMass())
-			.date(date)
+			.date(request.getDate())
 			.user(user)
 			.build();
 	}

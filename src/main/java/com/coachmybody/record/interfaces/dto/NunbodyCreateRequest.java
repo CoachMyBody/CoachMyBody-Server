@@ -1,5 +1,7 @@
 package com.coachmybody.record.interfaces.dto;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,5 +23,5 @@ public class NunbodyCreateRequest {
 
 	@ApiModelProperty(value = "날짜", example = "2021-05-19", required = true)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	String date;
+	LocalDate date;
 }

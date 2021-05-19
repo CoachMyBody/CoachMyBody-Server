@@ -1,7 +1,6 @@
 package com.coachmybody.record.application;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,11 +65,8 @@ public class RecordService {
 		RecordRoutine recordRoutine = RecordRoutine.of(routine);
 		recordRoutine = recordRoutineRepository.save(recordRoutine);
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate date = LocalDate.parse(request.getDate(), formatter);
-
 		Record record = Record.builder()
-			.date(date)
+			.date(request.getDate())
 			.hours(request.getHours())
 			.minutes(request.getMinutes())
 			.feedbackBySelf(request.getFeedbackBySelf())
@@ -102,11 +98,9 @@ public class RecordService {
 		return null;
 	}
 
+	@Transactional
 	public void createInbody(User user, InbodyCreateRequest request) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate date = LocalDate.parse(request.getDate(), formatter);
-
-		Optional<Inbody> checkInbody = inbodyRepository.findInbodyByUserAndDate(user, date);
+		Optional<Inbody> checkInbody = inbodyRepository.findInbodyByUserAndDate(user, request.getDate());
 
 		if (checkInbody.isPresent()) {
 			throw new DuplicatedEntityException();
@@ -115,5 +109,18 @@ public class RecordService {
 		Inbody inbody = Inbody.of(request, user);
 
 		inbodyRepository.save(inbody);
+	}
+
+	@Transactional
+	public void createNunbody(User user, NunbodyCreateRequest request) {
+		Optional<Nunbody> checkNunbody = nunbodyRepository.findNunbodyByUserAndDate(user, request.getDate());
+
+		if (checkNunbody.isPresent()) {
+			throw new DuplicatedEntityException();
+		}
+
+		Nunbody nunbody = Nunbody.of(request, user);
+
+		nunbodyRepository.save(nunbody);
 	}
 }
