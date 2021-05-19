@@ -35,7 +35,7 @@ public class RoutineExerciseResponse {
 		Exercise exercise = routineExercise.getExercise();
 
 		return RoutineExerciseResponse.builder()
-			.id(routineExercise.getId())
+			.id(exercise.getId())
 			.name(exercise.getName())
 			.imageUri(exercise.getImageUri())
 			.exerciseLab(routineExercise.getExerciseLab())
