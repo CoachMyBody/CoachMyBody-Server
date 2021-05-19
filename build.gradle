@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.4.3'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
-	id 'java'
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+    id 'java'
 }
 
 group = 'com'
@@ -10,63 +10,66 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation ("org.springframework.boot:spring-boot-starter-web")
-	implementation ("org.springframework.boot:spring-boot-starter-actuator")
-	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-	implementation('com.querydsl:querydsl-jpa')
+    implementation('com.querydsl:querydsl-jpa')
 
-	implementation('com.google.guava:guava:30.1.1-jre')
+    implementation('com.google.guava:guava:30.1.1-jre')
 
-	implementation("io.springfox:springfox-boot-starter:3.0.0"){
-		exclude group: "io.swagger", module: "swagger-annotations"
-		exclude group: "io.swagger", module: "swagger-models"
-	}
-	implementation("io.swagger:swagger-annotations:1.5.21")
-	implementation("io.swagger:swagger-models:1.5.21")
+    implementation("io.springfox:springfox-boot-starter:3.0.0") {
+        exclude group: "io.swagger", module: "swagger-annotations"
+        exclude group: "io.swagger", module: "swagger-models"
+    }
+    implementation("io.swagger:swagger-annotations:1.5.21")
+    implementation("io.swagger:swagger-models:1.5.21")
 
-	compile("org.mariadb.jdbc:mariadb-java-client")
-	compileOnly ("org.projectlombok:lombok")
-	runtimeOnly ("com.h2database:h2")
-	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-	runtimeOnly ("mysql:mysql-connector-java")
-	annotationProcessor ("org.projectlombok:lombok")
+    implementation('com.amazonaws:aws-java-sdk-s3:1.11.1021')
 
-	developmentOnly ("org.springframework.boot:spring-boot-devtools")
-	testImplementation ("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.junit.jupiter:junit-jupiter-api")
-	testImplementation("org.junit.jupiter:junit-jupiter-params")
-	testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
+    compile("org.mariadb.jdbc:mariadb-java-client")
+    compileOnly("org.projectlombok:lombok")
+    runtimeOnly("com.h2database:h2")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    runtimeOnly("mysql:mysql-connector-java")
+    annotationProcessor("org.projectlombok:lombok")
 
-	testImplementation("io.rest-assured:rest-assured:${restAssuredVersion}")
-	testImplementation("io.rest-assured:rest-assured-all:${restAssuredVersion}")
-	testImplementation("io.rest-assured:spring-mock-mvc:${restAssuredVersion}")
-	testImplementation("io.rest-assured:json-schema-validator:${restAssuredVersion}")
-	testImplementation("io.rest-assured:xml-path:${restAssuredVersion}")
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
+
+    testImplementation("io.rest-assured:rest-assured:${restAssuredVersion}")
+    testImplementation("io.rest-assured:rest-assured-all:${restAssuredVersion}")
+    testImplementation("io.rest-assured:spring-mock-mvc:${restAssuredVersion}")
+    testImplementation("io.rest-assured:json-schema-validator:${restAssuredVersion}")
+    testImplementation("io.rest-assured:xml-path:${restAssuredVersion}")
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 def querydslSrcDir = 'src/main/generated/querydsl'
 
 querydsl {
-	jpa = true
-	querydslSourcesDir = querydslSrcDir
+    jpa = true
+    querydslSourcesDir = querydslSrcDir
 }
 sourceSets {
-	main.java.srcDirs querydslSrcDir
+    main.java.srcDirs querydslSrcDir
 }
 configurations {
-	querydsl.extendsFrom compileClasspath
+    querydsl.extendsFrom compileClasspath
 }
 compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
+    options.annotationProcessorPath = configurations.querydsl
 }
