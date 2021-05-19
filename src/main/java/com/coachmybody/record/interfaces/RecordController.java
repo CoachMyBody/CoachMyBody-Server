@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.coachmybody.common.dto.HeaderDto;
 import com.coachmybody.common.dto.ProblemResponse;
 import com.coachmybody.record.application.RecordService;
+import com.coachmybody.record.interfaces.dto.InbodyCreateRequest;
 import com.coachmybody.record.interfaces.dto.RecordCreateRequest;
 import com.coachmybody.record.interfaces.dto.RecordDailyResponse;
 import com.coachmybody.record.interfaces.dto.RecordMonthlyResponse;
@@ -59,6 +60,7 @@ public class RecordController {
 	@ApiOperation("운동 현황 데일리 조회")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "운동 현황 데일리 조회 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/records/daily")
@@ -77,6 +79,7 @@ public class RecordController {
 	@ApiOperation("운동 현황 먼슬리 조회")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "운동 현황 먼슬리 조회 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/records/monthly")
@@ -91,4 +94,21 @@ public class RecordController {
 
 		return ResponseEntity.ok(recordService.getMonthlyRecord(date, user));
 	}
+
+	@ApiOperation("인바디 기록")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "인바디 기록 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class),
+		@ApiResponse(code = 409, message = "이미 존재하는 인바디", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/inbody")
+	public void createInbody(@RequestHeader HttpHeaders headers,
+		@RequestBody @Valid InbodyCreateRequest request) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		recordService.createInbody(user, request);
+	}
+
 }

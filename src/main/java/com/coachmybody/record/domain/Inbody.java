@@ -1,6 +1,8 @@
 package com.coachmybody.record.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.coachmybody.record.interfaces.dto.InbodyCreateRequest;
 import com.coachmybody.user.domain.User;
 
 import lombok.AllArgsConstructor;
@@ -33,10 +36,25 @@ public class Inbody {
 
 	private Float bodyFatMass;
 
+	private LocalDate date;
+
 	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+
+	public static Inbody of(InbodyCreateRequest request, User user) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate date = LocalDate.parse(request.getDate(), formatter);
+
+		return Inbody.builder()
+			.weight(request.getWeight())
+			.skeletalMuscleMass(request.getSkeletalMuscleMass())
+			.bodyFatMass(request.getBodyFatMass())
+			.date(date)
+			.user(user)
+			.build();
+	}
 }

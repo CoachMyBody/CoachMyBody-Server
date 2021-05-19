@@ -3,12 +3,14 @@ package com.coachmybody.record.application;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.record.domain.Inbody;
 import com.coachmybody.record.domain.Nunbody;
 import com.coachmybody.record.domain.Record;
@@ -47,27 +49,14 @@ public class RecordService {
 		Inbody inbody = null;
 		if (request.getInbody() != null) {
 			InbodyCreateRequest inbodyRequest = request.getInbody();
-
-			inbody = Inbody.builder()
-				.weight(inbodyRequest.getWeight())
-				.skeletalMuscleMass(inbodyRequest.getSkeletalMuscleMass())
-				.bodyFatMass(inbodyRequest.getBodyFatMass())
-				.user(user)
-				.build();
-
+			inbody = Inbody.of(inbodyRequest, user);
 			inbody = inbodyRepository.save(inbody);
 		}
 
 		Nunbody nunbody = null;
 		if (request.getNunbody() != null) {
 			NunbodyCreateRequest nunbodyRequest = request.getNunbody();
-
-			nunbody = Nunbody.builder()
-				.imageUri(nunbodyRequest.getImageUri())
-				.tag(nunbodyRequest.getTag())
-				.user(user)
-				.build();
-
+			nunbody = Nunbody.of(nunbodyRequest, user);
 			nunbody = nunbodyRepository.save(nunbody);
 		}
 
@@ -111,5 +100,20 @@ public class RecordService {
 	@Transactional(readOnly = true)
 	public RecordMonthlyResponse getMonthlyRecord(LocalDate date, User user) {
 		return null;
+	}
+
+	public void createInbody(User user, InbodyCreateRequest request) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate date = LocalDate.parse(request.getDate(), formatter);
+
+		Optional<Inbody> checkInbody = inbodyRepository.findInbodyByUserAndDate(user, date);
+
+		if (checkInbody.isPresent()) {
+			throw new DuplicatedEntityException();
+		}
+
+		Inbody inbody = Inbody.of(request, user);
+
+		inbodyRepository.save(inbody);
 	}
 }
