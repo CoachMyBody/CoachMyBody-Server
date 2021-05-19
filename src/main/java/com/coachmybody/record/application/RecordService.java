@@ -1,5 +1,6 @@
 package com.coachmybody.record.application;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +9,11 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.coachmybody.common.component.S3UploadComponent;
 import com.coachmybody.common.exception.DuplicatedEntityException;
+import com.coachmybody.common.exception.FileUploadException;
 import com.coachmybody.record.domain.Inbody;
 import com.coachmybody.record.domain.Nunbody;
 import com.coachmybody.record.domain.Record;
@@ -42,6 +46,8 @@ public class RecordService {
 	private final NunbodyRepository nunbodyRepository;
 	private final RecordRoutineRepository recordRoutineRepository;
 	private final RecordRoutineExerciseRepository recordRoutineExerciseRepository;
+
+	private final S3UploadComponent s3UploadComponent;
 
 	@Transactional
 	public void create(RecordCreateRequest request, User user) {
@@ -122,5 +128,16 @@ public class RecordService {
 		Nunbody nunbody = Nunbody.of(request, user);
 
 		nunbodyRepository.save(nunbody);
+	}
+
+	@Transactional
+	public String uploadNunbodyImage(MultipartFile image) {
+		String imageUri = "";
+		try {
+			imageUri = s3UploadComponent.uploadImage(image);
+		} catch (IOException e) {
+			throw new FileUploadException();
+		}
+		return imageUri;
 	}
 }

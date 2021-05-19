@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.coachmybody.common.dto.HeaderDto;
 import com.coachmybody.common.dto.ProblemResponse;
@@ -126,5 +127,15 @@ public class RecordController {
 		User user = userService.findByToken(header.getToken());
 
 		recordService.createNunbody(user, request);
+	}
+
+	@ApiOperation("눈바디 이미지 업로드")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "눈바디 이미지 업로드 성공")
+	})
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/nunbody/image")
+	public ResponseEntity<String> uploadNunbodyImage(@RequestParam(name = "image") MultipartFile image) {
+		return ResponseEntity.ok(recordService.uploadNunbodyImage(image));
 	}
 }
