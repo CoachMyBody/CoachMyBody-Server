@@ -1,14 +1,19 @@
 package com.coachmybody.record.application;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.coachmybody.common.component.S3UploadComponent;
+import com.coachmybody.common.exception.DuplicatedEntityException;
+import com.coachmybody.common.exception.FileUploadException;
 import com.coachmybody.record.domain.Inbody;
 import com.coachmybody.record.domain.Nunbody;
 import com.coachmybody.record.domain.Record;
@@ -42,32 +47,21 @@ public class RecordService {
 	private final RecordRoutineRepository recordRoutineRepository;
 	private final RecordRoutineExerciseRepository recordRoutineExerciseRepository;
 
+	private final S3UploadComponent s3UploadComponent;
+
 	@Transactional
 	public void create(RecordCreateRequest request, User user) {
 		Inbody inbody = null;
 		if (request.getInbody() != null) {
 			InbodyCreateRequest inbodyRequest = request.getInbody();
-
-			inbody = Inbody.builder()
-				.weight(inbodyRequest.getWeight())
-				.skeletalMuscleMass(inbodyRequest.getSkeletalMuscleMass())
-				.bodyFatMass(inbodyRequest.getBodyFatMass())
-				.user(user)
-				.build();
-
+			inbody = Inbody.of(inbodyRequest, user);
 			inbody = inbodyRepository.save(inbody);
 		}
 
 		Nunbody nunbody = null;
 		if (request.getNunbody() != null) {
 			NunbodyCreateRequest nunbodyRequest = request.getNunbody();
-
-			nunbody = Nunbody.builder()
-				.imageUri(nunbodyRequest.getImageUri())
-				.tag(nunbodyRequest.getTag())
-				.user(user)
-				.build();
-
+			nunbody = Nunbody.of(nunbodyRequest, user);
 			nunbody = nunbodyRepository.save(nunbody);
 		}
 
@@ -77,11 +71,8 @@ public class RecordService {
 		RecordRoutine recordRoutine = RecordRoutine.of(routine);
 		recordRoutine = recordRoutineRepository.save(recordRoutine);
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate date = LocalDate.parse(request.getDate(), formatter);
-
 		Record record = Record.builder()
-			.date(date)
+			.date(request.getDate())
 			.hours(request.getHours())
 			.minutes(request.getMinutes())
 			.feedbackBySelf(request.getFeedbackBySelf())
@@ -111,5 +102,42 @@ public class RecordService {
 	@Transactional(readOnly = true)
 	public RecordMonthlyResponse getMonthlyRecord(LocalDate date, User user) {
 		return null;
+	}
+
+	@Transactional
+	public void createInbody(User user, InbodyCreateRequest request) {
+		Optional<Inbody> checkInbody = inbodyRepository.findInbodyByUserAndDate(user, request.getDate());
+
+		if (checkInbody.isPresent()) {
+			throw new DuplicatedEntityException();
+		}
+
+		Inbody inbody = Inbody.of(request, user);
+
+		inbodyRepository.save(inbody);
+	}
+
+	@Transactional
+	public void createNunbody(User user, NunbodyCreateRequest request) {
+		Optional<Nunbody> checkNunbody = nunbodyRepository.findNunbodyByUserAndDate(user, request.getDate());
+
+		if (checkNunbody.isPresent()) {
+			throw new DuplicatedEntityException();
+		}
+
+		Nunbody nunbody = Nunbody.of(request, user);
+
+		nunbodyRepository.save(nunbody);
+	}
+
+	@Transactional
+	public String uploadNunbodyImage(MultipartFile image) {
+		String imageUri = "";
+		try {
+			imageUri = s3UploadComponent.uploadImage(image);
+		} catch (IOException e) {
+			throw new FileUploadException();
+		}
+		return imageUri;
 	}
 }

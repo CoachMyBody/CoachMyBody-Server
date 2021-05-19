@@ -1,6 +1,10 @@
 package com.coachmybody.record.interfaces.dto;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,4 +20,8 @@ public class NunbodyCreateRequest {
 	@ApiModelProperty(value = "태그", required = true)
 	@NotNull(message = "The tag must not be Null")
 	String tag;
+
+	@ApiModelProperty(value = "날짜", example = "2021-05-19", required = true)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	LocalDate date;
 }
