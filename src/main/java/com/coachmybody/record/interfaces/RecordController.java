@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.coachmybody.common.dto.HeaderDto;
+import com.coachmybody.common.dto.PageResponse;
 import com.coachmybody.common.dto.ProblemResponse;
 import com.coachmybody.record.application.RecordService;
 import com.coachmybody.record.interfaces.dto.InbodyCreateRequest;
 import com.coachmybody.record.interfaces.dto.NunbodyCreateRequest;
+import com.coachmybody.record.interfaces.dto.NunbodyResponse;
 import com.coachmybody.record.interfaces.dto.RecordCreateRequest;
 import com.coachmybody.record.interfaces.dto.RecordDailyResponse;
 import com.coachmybody.record.interfaces.dto.RecordMonthlyResponse;
+import com.coachmybody.record.interfaces.type.NunbodySortType;
 import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.domain.User;
 
@@ -99,7 +103,7 @@ public class RecordController {
 
 	@ApiOperation("인바디 기록")
 	@ApiResponses(value = {
-		@ApiResponse(code = 200, message = "인바디 기록 성공"),
+		@ApiResponse(code = 201, message = "인바디 기록 성공"),
 		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class),
 		@ApiResponse(code = 409, message = "이미 존재하는 인바디", response = ProblemResponse.class)
 	})
@@ -115,7 +119,7 @@ public class RecordController {
 
 	@ApiOperation("눈바디 기록")
 	@ApiResponses(value = {
-		@ApiResponse(code = 200, message = "눈바디 기록 성공"),
+		@ApiResponse(code = 201, message = "눈바디 기록 성공"),
 		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class),
 		@ApiResponse(code = 409, message = "이미 존재하는 눈바디", response = ProblemResponse.class)
 	})
@@ -131,11 +135,30 @@ public class RecordController {
 
 	@ApiOperation("눈바디 이미지 업로드")
 	@ApiResponses(value = {
-		@ApiResponse(code = 200, message = "눈바디 이미지 업로드 성공")
+		@ApiResponse(code = 201, message = "눈바디 이미지 업로드 성공")
 	})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/nunbody/image")
 	public ResponseEntity<String> uploadNunbodyImage(@RequestParam(name = "image") MultipartFile image) {
 		return ResponseEntity.ok(recordService.uploadNunbodyImage(image));
+	}
+
+	@ApiOperation("마이 눈바디 조회")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "마이 눈바디 조회 성공")
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/users/nunbody")
+	public PageResponse<NunbodyResponse> getNunbody(@RequestHeader HttpHeaders headers,
+		@RequestParam(required = false, defaultValue = "0") int page,
+		@RequestParam(required = false, defaultValue = "20") int size,
+		@RequestParam(required = false, defaultValue = "DATE_DESC") NunbodySortType sort) {
+
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		PageRequest pageRequest = PageRequest.of(page, size);
+
+		return recordService.getNunbody(user, pageRequest, sort);
 	}
 }

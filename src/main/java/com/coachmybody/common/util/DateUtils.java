@@ -1,6 +1,8 @@
 package com.coachmybody.common.util;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 
@@ -14,5 +16,11 @@ public class DateUtils {
 
 	public static Instant calculateExpireAt(Instant now) {
 		return now.plus(EXPIRE_AMOUNT, EXPIRE_UNIT);
+	}
+
+	public static String convertDateToString(LocalDate date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		return date.format(formatter);
 	}
 }
