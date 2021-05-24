@@ -1,10 +1,13 @@
 package com.coachmybody.user.application;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.common.exception.InvalidAccessTokenException;
@@ -16,6 +19,7 @@ import com.coachmybody.user.domain.repository.UserAuthRepository;
 import com.coachmybody.user.domain.repository.UserRepository;
 import com.coachmybody.user.interfaces.dto.AuthResponse;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
+import com.coachmybody.user.interfaces.dto.UserResponse;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -91,5 +95,13 @@ public class UserService {
 
 		return userRepository.findById(userAuth.getUserId())
 			.orElseThrow(NotFoundEntityException::new);
+	}
+
+	@Transactional(readOnly = true)
+	public List<UserResponse> getUsers() {
+		return userRepository.findAll()
+			.stream()
+			.map(UserResponse::of)
+			.collect(Collectors.toList());
 	}
 }
