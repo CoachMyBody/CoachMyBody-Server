@@ -47,7 +47,7 @@ public class AuthController {
 	@ApiOperation("로그인")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "로그인 성공"),
-		@ApiResponse(code = 400, message = "존재하지 않는 회원", response = ProblemResponse.class)
+		@ApiResponse(code = 404, message = "존재하지 않는 회원", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/login")
