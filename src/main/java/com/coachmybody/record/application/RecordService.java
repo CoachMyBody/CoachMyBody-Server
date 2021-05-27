@@ -33,6 +33,7 @@ import com.coachmybody.record.domain.repository.RecordRepository;
 import com.coachmybody.record.domain.repository.RecordRoutineExerciseRepository;
 import com.coachmybody.record.domain.repository.RecordRoutineRepository;
 import com.coachmybody.record.interfaces.dto.InbodyCreateRequest;
+import com.coachmybody.record.interfaces.dto.InbodyNunbodyCheckResponse;
 import com.coachmybody.record.interfaces.dto.NunbodyCreateRequest;
 import com.coachmybody.record.interfaces.dto.NunbodyResponse;
 import com.coachmybody.record.interfaces.dto.RecordCreateRequest;
@@ -190,5 +191,16 @@ public class RecordService {
 		} else {
 			nunbodyCompare.setAfterNunbody(null);
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public InbodyNunbodyCheckResponse checkInbodyNunbody(User user, LocalDate date) {
+		Optional<Inbody> inbody = inbodyRepository.findInbodyByUserAndDate(user, date);
+		Optional<Nunbody> nunbody = nunbodyRepository.findNunbodyByUserAndDate(user, date);
+
+		return InbodyNunbodyCheckResponse.builder()
+			.hasInbody(inbody.isPresent())
+			.hasNunbody(nunbody.isPresent())
+			.build();
 	}
 }
