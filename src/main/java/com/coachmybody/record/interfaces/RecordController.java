@@ -26,6 +26,7 @@ import com.coachmybody.common.dto.PageResponse;
 import com.coachmybody.common.dto.ProblemResponse;
 import com.coachmybody.record.application.RecordService;
 import com.coachmybody.record.interfaces.dto.InbodyCreateRequest;
+import com.coachmybody.record.interfaces.dto.InbodyNunbodyCheckResponse;
 import com.coachmybody.record.interfaces.dto.NunbodyCreateRequest;
 import com.coachmybody.record.interfaces.dto.NunbodyResponse;
 import com.coachmybody.record.interfaces.dto.RecordCreateRequest;
@@ -168,7 +169,7 @@ public class RecordController {
 	@ApiOperation("눈바디 비포 애프터 등록 (+ 수정)")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "눈바디 비포 애프터 등록 성공"),
-		@ApiResponse(code = 404, message = "존재하지 않는 눈바디")
+		@ApiResponse(code = 404, message = "존재하지 않는 눈바디", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("users/nunbody/{nunbodyId}/{type}")
@@ -185,7 +186,7 @@ public class RecordController {
 	@ApiOperation("눈바디 비포 애프터 삭제")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "눈바디 비포 애프터 삭제 성공"),
-		@ApiResponse(code = 404, message = "존재하지 않는 눈바디 비포 or 애프터")
+		@ApiResponse(code = 404, message = "존재하지 않는 눈바디 비포 or 애프터", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/users/nunbody/{type}")
@@ -196,5 +197,21 @@ public class RecordController {
 		User user = userService.findByToken(header.getToken());
 
 		recordService.deleteNunbodyCompare(user, type);
+	}
+
+	@ApiOperation("인바디 / 눈바디 여부 체크")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "인바디 / 눈바디 여부 조회 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class),
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/inbody-nunbody/check/{date}")
+	public ResponseEntity<InbodyNunbodyCheckResponse> checkInbodyNunbody(@RequestHeader HttpHeaders headers,
+		@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		return ResponseEntity.ok(recordService.checkInbodyNunbody(user, date));
 	}
 }
