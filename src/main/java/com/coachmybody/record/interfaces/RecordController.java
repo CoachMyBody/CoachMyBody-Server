@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -30,6 +31,7 @@ import com.coachmybody.record.interfaces.dto.RecordCreateRequest;
 import com.coachmybody.record.interfaces.dto.RecordDailyResponse;
 import com.coachmybody.record.interfaces.dto.RecordMonthlyResponse;
 import com.coachmybody.record.interfaces.type.NunbodySortType;
+import com.coachmybody.record.type.NunbodyCompareType;
 import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.domain.User;
 
@@ -160,5 +162,22 @@ public class RecordController {
 		PageRequest pageRequest = PageRequest.of(page, size);
 
 		return recordService.getNunbody(user, pageRequest, sort);
+	}
+
+	@ApiOperation("눈바디 비포 애프터 등록")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "눈바디 비포 애프터 등록 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 눈바디")
+	})
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("users/nunbody/{nunbodyId}/{type}")
+	public void createNunbodyCompare(@RequestHeader HttpHeaders headers,
+		@PathVariable("nunbodyId") Long nunbodyId,
+		@PathVariable("type") NunbodyCompareType type) {
+
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		recordService.createNunbodyCompare(user, nunbodyId, type);
 	}
 }
