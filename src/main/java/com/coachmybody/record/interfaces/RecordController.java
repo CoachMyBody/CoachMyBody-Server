@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -164,12 +165,12 @@ public class RecordController {
 		return recordService.getNunbody(user, pageRequest, sort);
 	}
 
-	@ApiOperation("눈바디 비포 애프터 등록")
+	@ApiOperation("눈바디 비포 애프터 등록 (+ 수정)")
 	@ApiResponses(value = {
 		@ApiResponse(code = 200, message = "눈바디 비포 애프터 등록 성공"),
 		@ApiResponse(code = 404, message = "존재하지 않는 눈바디")
 	})
-	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("users/nunbody/{nunbodyId}/{type}")
 	public void createNunbodyCompare(@RequestHeader HttpHeaders headers,
 		@PathVariable("nunbodyId") Long nunbodyId,
@@ -179,5 +180,21 @@ public class RecordController {
 		User user = userService.findByToken(header.getToken());
 
 		recordService.createNunbodyCompare(user, nunbodyId, type);
+	}
+
+	@ApiOperation("눈바디 비포 애프터 삭제")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "눈바디 비포 애프터 삭제 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 눈바디 비포 or 애프터")
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/users/nunbody/{type}")
+	public void deleteNunbodyCompare(@RequestHeader HttpHeaders headers,
+		@PathVariable("type") NunbodyCompareType type) {
+
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		recordService.deleteNunbodyCompare(user, type);
 	}
 }

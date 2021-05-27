@@ -179,4 +179,16 @@ public class RecordService {
 
 		nunbodyCompareRepository.save(nunbodyCompare);
 	}
+
+	@Transactional
+	public void deleteNunbodyCompare(User user, NunbodyCompareType type) {
+		NunbodyCompare nunbodyCompare = nunbodyCompareRepository.findNunbodyCompareByUser(user)
+			.orElseThrow(NotFoundEntityException::new);
+
+		if (type == NunbodyCompareType.BEFORE) {
+			nunbodyCompare.setBeforeNunbody(null);
+		} else {
+			nunbodyCompare.setAfterNunbody(null);
+		}
+	}
 }
