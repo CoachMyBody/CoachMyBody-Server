@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ExerciseCategoryType {
-	WEIGHT("헬스"),
+	FITNESS("헬스"),
 	PILATES("필라테스"),
 	YOGA("요가"),
 	CARDIO("유산소");
