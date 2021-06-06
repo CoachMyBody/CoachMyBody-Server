@@ -3,7 +3,6 @@ package com.coachmybody.record.domain.repository;
 import static com.coachmybody.record.domain.QRecord.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -27,8 +26,7 @@ public class RecordQueryRepository {
 	}
 
 	BooleanExpression eqDateAndUser(LocalDate date, User user) {
-		return record.createdAt.before(date.atTime(LocalTime.MAX))
-			.and(record.createdAt.after(date.atTime(LocalTime.MIN)))
+		return record.date.eq(date)
 			.and(record.user.eq(user));
 	}
 }
