@@ -25,6 +25,6 @@ public class BodyPartSub {
 	private BodyPartSubType name;
 
 	@JoinColumn(name = "body_part_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private BodyPart bodyPart;
 }

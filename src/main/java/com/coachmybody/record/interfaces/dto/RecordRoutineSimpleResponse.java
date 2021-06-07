@@ -39,7 +39,7 @@ public class RecordRoutineSimpleResponse {
 	public static RecordRoutineSimpleResponse of(Record record) {
 		RecordRoutine recordRoutine = record.getRecordRoutine();
 
-		String imageUri = "기본 이미지";
+		String imageUri = "";
 		int exerciseCount = 0;
 
 		List<RecordRoutineExercise> exercises = recordRoutine.getExercises();

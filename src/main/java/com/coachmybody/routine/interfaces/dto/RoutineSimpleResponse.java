@@ -27,7 +27,7 @@ public class RoutineSimpleResponse {
 	Integer exerciseCount;
 
 	public static RoutineSimpleResponse of(Routine routine) {
-		String imageUri = "기본 이미지";
+		String imageUri = "";
 		int exerciseCount = 0;
 
 		List<RoutineExercise> exercises = routine.getExercises();

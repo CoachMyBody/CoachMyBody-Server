@@ -30,11 +30,11 @@ public class RecordRoutineExercise {
 	private Long id;
 
 	@JoinColumn(name = "exercise_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Exercise exercise;
 
 	@JoinColumn(name = "record_routine_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private RecordRoutine recordRoutine;
 
 	@Enumerated(value = EnumType.STRING)

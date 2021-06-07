@@ -2,7 +2,6 @@ package com.coachmybody.routine.application;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -10,7 +9,6 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.coachmybody.common.exception.NotAcceptableException;
 import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.exercise.domain.ExerciseLabSet;
 import com.coachmybody.exercise.domain.ExerciseRecord;
@@ -69,16 +67,8 @@ public class RoutineService {
 	}
 
 	@Transactional
-	public void deleteByIds(List<Long> routineIds, UUID userId) {
+	public void deleteByIds(List<Long> routineIds) {
 		List<Routine> routines = routineRepository.findAllById(routineIds);
-
-		routines.forEach(routine -> {
-			UUID routineUserId = routine.getUser().getId();
-			if (!routineUserId.equals(userId)) {
-				throw new NotAcceptableException();
-			}
-		});
-
 		routineRepository.deleteAll(routines);
 	}
 

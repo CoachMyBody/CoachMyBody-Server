@@ -104,7 +104,7 @@ public class RoutineController {
 
 		User user = userService.findByToken(headerDto.getToken());
 
-		routineService.deleteByIds(request.getRoutineIds(), user.getId());
+		routineService.deleteByIds(request.getRoutineIds());
 	}
 
 	@ApiOperation("루틴 운동 추가")

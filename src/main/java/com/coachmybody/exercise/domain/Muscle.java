@@ -29,9 +29,9 @@ public class Muscle {
 	private MuscleType name;
 
 	@JoinColumn(name = "body_part_sub_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private BodyPartSub bodyPartSub;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "muscle", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "muscle", cascade = CascadeType.ALL)
 	private Set<ExerciseToMuscle> exerciseToMuscles;
 }
