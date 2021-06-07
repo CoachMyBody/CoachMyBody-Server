@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -38,6 +40,10 @@ public class Exercise {
 	private String description;
 
 	private String caution;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "main_body_part_sub_id", nullable = false)
+	private BodyPartSub mainBodyPartSub;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "exercise")
 	private ExerciseRecord exerciseRecord;

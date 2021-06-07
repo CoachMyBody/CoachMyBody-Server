@@ -44,10 +44,13 @@ public class ExerciseDetailResponse {
 	@ApiModelProperty(value = "적용 근육", example = "[TRAPEZIUS, LATISSIMUS_DORSI]", required = true)
 	List<MuscleType> muscles;
 
+	@ApiModelProperty(value = "태그", required = true)
+	List<String> tags;
+
 	@ApiModelProperty(value = "연관 운동", example = "[DEAD_LIFT, SHOULDER_PRESS]")
 	List<ExerciseSimpleResponse> relatedExercises;
 
-	public static ExerciseDetailResponse of(Exercise exercise) {
+	public static ExerciseDetailResponse of(Exercise exercise, List<Exercise> relatedExercises) {
 		List<Muscle> muscleList = exercise.getExerciseToMuscles()
 			.stream()
 			.map(ExerciseToMuscle::getMuscle)
@@ -62,15 +65,24 @@ public class ExerciseDetailResponse {
 			.map(Muscle::getName)
 			.collect(Collectors.toList());
 
+		String imageUri = exercise.getImageUri() == null ? "" : exercise.getImageUri();
+
+		String tag1 = "#" + exercise.getCategory().getName();
+		String tag2 = "#" + exercise.getMainBodyPartSub().getName().getName();
+
 		return ExerciseDetailResponse.builder()
 			.id(exercise.getId())
 			.name(exercise.getName())
-			.imageUri(exercise.getImageUri())
+			.imageUri(imageUri)
 			.category(exercise.getCategory())
 			.bodyPart(exercise.getBodyPart())
 			.bodyPartSubs(bodyPartSubs)
 			.exerciseTime(new ExerciseTimeDto(exercise.getExerciseRecord()))
 			.muscles(muscles)
+			.tags(List.of(tag1, tag2))
+			.relatedExercises(relatedExercises.stream()
+				.map(ExerciseSimpleResponse::of)
+				.collect(Collectors.toList()))
 			.build();
 	}
 }
