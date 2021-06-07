@@ -26,9 +26,20 @@ public class RecordQueryRepository {
 			.fetch();
 	}
 
+	public List<Record> findByDateBetween(LocalDate startDate, LocalDate endDate, User user) {
+		return queryFactory.selectFrom(record)
+			.where(betweenDateAndUser(startDate, endDate, user))
+			.fetch();
+	}
+
 	BooleanExpression eqDateAndUser(LocalDate date, User user) {
 		return record.createdAt.before(date.atTime(LocalTime.MAX))
 			.and(record.createdAt.after(date.atTime(LocalTime.MIN)))
+			.and(record.user.eq(user));
+	}
+
+	BooleanExpression betweenDateAndUser(LocalDate startDate, LocalDate endDate, User user) {
+		return record.date.between(startDate, endDate)
 			.and(record.user.eq(user));
 	}
 }

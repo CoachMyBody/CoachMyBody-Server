@@ -2,7 +2,10 @@ package com.coachmybody.record.application;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -18,6 +21,7 @@ import com.coachmybody.common.dto.PageResponse;
 import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.common.exception.FileUploadException;
 import com.coachmybody.common.exception.NotFoundEntityException;
+import com.coachmybody.common.util.DateUtils;
 import com.coachmybody.record.domain.Inbody;
 import com.coachmybody.record.domain.Nunbody;
 import com.coachmybody.record.domain.NunbodyCompare;
@@ -38,15 +42,19 @@ import com.coachmybody.record.interfaces.dto.NunbodyCreateRequest;
 import com.coachmybody.record.interfaces.dto.NunbodyResponse;
 import com.coachmybody.record.interfaces.dto.RecordCreateRequest;
 import com.coachmybody.record.interfaces.dto.RecordDailyResponse;
+import com.coachmybody.record.interfaces.dto.RecordMonthlyOneDayResponse;
 import com.coachmybody.record.interfaces.dto.RecordMonthlyResponse;
 import com.coachmybody.record.interfaces.type.NunbodySortType;
 import com.coachmybody.record.type.NunbodyCompareType;
 import com.coachmybody.routine.domain.Routine;
 import com.coachmybody.routine.domain.repository.RoutineRepository;
 import com.coachmybody.user.domain.User;
+import com.google.common.collect.Lists;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RecordService {
@@ -112,8 +120,45 @@ public class RecordService {
 	}
 
 	@Transactional(readOnly = true)
-	public RecordMonthlyResponse getMonthlyRecord(LocalDate date, User user) {
-		return null;
+	public RecordMonthlyResponse getMonthlyRecord(User user, YearMonth yearMonth) {
+		LocalDate startDate = DateUtils.convertFirstDayOfMonth(yearMonth);
+		LocalDate endDate = DateUtils.convertLastDayOfMonth(yearMonth);
+
+		Map<LocalDate, List<Record>> recordMap = new HashMap<>();
+		List<Record> records = recordQueryRepository.findByDateBetween(startDate, endDate, user);
+		for (Record record : records) {
+			LocalDate date = record.getDate();
+			List<Record> mapRecordList = recordMap.get(date) == null ? Lists.newArrayList() : recordMap.get(date);
+			mapRecordList.add(record);
+			recordMap.put(date, mapRecordList);
+		}
+
+		List<RecordMonthlyOneDayResponse> days = Lists.newArrayList();
+		int recordDayCount = 0;
+		do {
+			String dayOfWeek = DateUtils.convertDateToDayOfWeek(startDate);
+			int recordCount = 0;
+
+			List<Record> recordList = recordMap.get(startDate);
+			if (recordList != null) {
+				recordCount = recordList.size();
+				recordDayCount++;
+			}
+
+			RecordMonthlyOneDayResponse response = RecordMonthlyOneDayResponse.builder()
+				.date(startDate)
+				.dayOfWeek(dayOfWeek)
+				.recordCount(recordCount)
+				.build();
+			days.add(response);
+
+			startDate = startDate.plusDays(1);
+		} while (!startDate.isAfter(endDate));
+
+		return RecordMonthlyResponse.builder()
+			.days(days)
+			.recordDayCount(recordDayCount)
+			.build();
 	}
 
 	@Transactional
@@ -164,7 +209,8 @@ public class RecordService {
 		Nunbody nunbody = nunbodyRepository.findById(nunbodyId)
 			.orElseThrow(NotFoundEntityException::new);
 
-		Optional<NunbodyCompare> nunbodyBeforeAfterOptional = nunbodyCompareRepository.findNunbodyCompareByUser(user);
+		Optional<NunbodyCompare> nunbodyBeforeAfterOptional = nunbodyCompareRepository.findNunbodyCompareByUser(
+			user);
 
 		NunbodyCompare nunbodyCompare = new NunbodyCompare(user);
 
