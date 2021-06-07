@@ -1,8 +1,10 @@
 package com.coachmybody.record.interfaces;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -94,15 +96,11 @@ public class RecordController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/records/monthly")
 	public ResponseEntity<RecordMonthlyResponse> getMonthlyRecord(@RequestHeader HttpHeaders headers,
-		@RequestParam(name = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		@RequestParam(name = "date") @Pattern(regexp = "^([12]\\d{3}-(0[1-9]|1[0-2]))$") YearMonth date) {
 		HeaderDto header = HeaderDto.of(headers);
 		User user = userService.findByToken(header.getToken());
 
-		if (date == null) {
-			date = LocalDate.now();
-		}
-
-		return ResponseEntity.ok(recordService.getMonthlyRecord(date, user));
+		return ResponseEntity.ok(recordService.getMonthlyRecord(user, date));
 	}
 
 	@ApiOperation("인바디 기록")
