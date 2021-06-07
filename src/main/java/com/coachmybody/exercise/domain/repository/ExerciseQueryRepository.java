@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.exercise.interfaces.dto.ExerciseFilterRequest;
+import com.coachmybody.exercise.interfaces.dto.type.BodyTypeRequest;
 import com.coachmybody.exercise.type.BodyPartType;
 import com.coachmybody.exercise.type.ExerciseCategoryType;
 import com.querydsl.core.QueryResults;
@@ -26,7 +27,7 @@ public class ExerciseQueryRepository {
 	public Page<Exercise> findExercises(ExerciseFilterRequest filter, Pageable pageable) {
 		QueryResults<Exercise> results = queryFactory.selectFrom(exercise)
 			.where(category(filter.getCategory())
-				.and(bodyPart(filter.getBodyPart())))
+				.and(eqBodyPart(filter.getBodyPart())))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetchResults();
@@ -34,7 +35,7 @@ public class ExerciseQueryRepository {
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
 	}
 
-	BooleanExpression bodyPart(BodyPartType bodyPart) {
+	BooleanExpression eqBodyPart(BodyTypeRequest bodyPart) {
 		switch (bodyPart) {
 			case NONE:
 				return null;
