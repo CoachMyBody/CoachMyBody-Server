@@ -2,11 +2,14 @@ package com.coachmybody.exercise.domain.repository;
 
 import static com.coachmybody.exercise.domain.QExercise.*;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.coachmybody.exercise.domain.BodyPartSub;
 import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.exercise.interfaces.dto.ExerciseFilterRequest;
 import com.coachmybody.exercise.interfaces.dto.type.BodyTypeRequest;
@@ -51,5 +54,21 @@ public class ExerciseQueryRepository {
 
 	BooleanExpression category(ExerciseCategoryType category) {
 		return exercise.category.eq(category);
+	}
+
+	public List<Exercise> findRelatedExercises(Exercise baseExercise) {
+		return queryFactory.selectFrom(exercise)
+			.where(eqRelatedExercise(baseExercise))
+			.limit(7)
+			.fetch();
+	}
+
+	BooleanExpression eqRelatedExercise(Exercise baseExercise) {
+		ExerciseCategoryType category = baseExercise.getCategory();
+		BodyPartSub bodyPartSub = baseExercise.getMainBodyPartSub();
+
+		return exercise.category.eq(category)
+			.and(exercise.mainBodyPartSub.eq(bodyPartSub))
+			.and(exercise.ne(baseExercise));
 	}
 }
