@@ -32,7 +32,8 @@ public class RoutineSimpleResponse {
 
 		List<RoutineExercise> exercises = routine.getExercises();
 		if (exercises.size() > 1) {
-			imageUri = exercises.get(0).getExercise().getImageUri();
+			String exerciseImageUri = exercises.get(0).getExercise().getImageUri();
+			imageUri = exerciseImageUri == null ? "" : exerciseImageUri;
 			exerciseCount = exercises.size();
 		}
 

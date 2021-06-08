@@ -2,6 +2,7 @@ package com.coachmybody.routine.application;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -9,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.coachmybody.common.exception.NotFoundEntityException;
 import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.exercise.domain.ExerciseLabSet;
 import com.coachmybody.exercise.domain.ExerciseRecord;
@@ -16,7 +18,10 @@ import com.coachmybody.exercise.domain.ExerciseTimeSet;
 import com.coachmybody.exercise.domain.repository.ExerciseRepository;
 import com.coachmybody.exercise.type.ExerciseRecordType;
 import com.coachmybody.routine.domain.Routine;
+import com.coachmybody.routine.domain.RoutineBookmark;
+import com.coachmybody.routine.domain.RoutineBookmarkKey;
 import com.coachmybody.routine.domain.RoutineExercise;
+import com.coachmybody.routine.domain.repository.RoutineBookmarkRepository;
 import com.coachmybody.routine.domain.repository.RoutineExerciseQueryRepository;
 import com.coachmybody.routine.domain.repository.RoutineExerciseRepository;
 import com.coachmybody.routine.domain.repository.RoutineRepository;
@@ -35,6 +40,7 @@ public class RoutineService {
 	private final ExerciseRepository exerciseRepository;
 	private final RoutineExerciseRepository routineExerciseRepository;
 	private final RoutineExerciseQueryRepository routineExerciseQueryRepository;
+	private final RoutineBookmarkRepository routineBookmarkRepository;
 
 	@Transactional
 	public void create(String title, User user) {
@@ -59,11 +65,14 @@ public class RoutineService {
 	}
 
 	@Transactional(readOnly = true)
-	public RoutineDetailResponse findRoutineById(final long routineId) {
+	public RoutineDetailResponse findRoutineById(final long routineId, final UUID userId) {
 		Routine routine = routineRepository.findById(routineId)
 			.orElseThrow(EntityNotFoundException::new);
 
-		return RoutineDetailResponse.of(routine);
+		RoutineBookmarkKey key = new RoutineBookmarkKey(routineId, userId);
+		boolean isBookmarked = routineBookmarkRepository.existsById(key);
+
+		return RoutineDetailResponse.of(routine, isBookmarked);
 	}
 
 	@Transactional
@@ -151,5 +160,31 @@ public class RoutineService {
 				.orElseThrow(EntityNotFoundException::new);
 			routineExercise.updatePriority(ids.indexOf(id));
 		});
+	}
+
+	@Transactional
+	public boolean bookmark(final long routineId, final UUID userId) {
+		routineRepository.findById(routineId)
+			.orElseThrow(NotFoundEntityException::new);
+
+		RoutineBookmarkKey key = new RoutineBookmarkKey(routineId, userId);
+
+		if (routineBookmarkRepository.existsById(key)) {
+			routineBookmarkRepository.deleteById(key);
+			return false;
+		} else {
+			RoutineBookmark routineBookmark = new RoutineBookmark(routineId, userId);
+			routineBookmarkRepository.save(routineBookmark);
+			return true;
+		}
+	}
+
+	@Transactional
+	public void deleteBookmark(User user, List<Long> routineIds) {
+		UUID userId = user.getId();
+		for (Long routineId : routineIds) {
+			RoutineBookmarkKey key = new RoutineBookmarkKey(routineId, userId);
+			routineBookmarkRepository.deleteById(key);
+		}
 	}
 }
