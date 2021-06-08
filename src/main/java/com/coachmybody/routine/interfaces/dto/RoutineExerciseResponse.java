@@ -33,11 +33,12 @@ public class RoutineExerciseResponse {
 
 	public static RoutineExerciseResponse of(RoutineExercise routineExercise) {
 		Exercise exercise = routineExercise.getExercise();
+		String imageUri = exercise.getImageUri();
 
 		return RoutineExerciseResponse.builder()
 			.id(exercise.getId())
 			.name(exercise.getName())
-			.imageUri(exercise.getImageUri())
+			.imageUri(imageUri == null ? "" : imageUri)
 			.exerciseLab(routineExercise.getExerciseLab())
 			.exerciseSet(routineExercise.getExerciseSet())
 			.priority(routineExercise.getPriority())

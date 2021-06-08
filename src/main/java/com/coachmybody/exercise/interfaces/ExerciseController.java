@@ -17,7 +17,7 @@ import com.coachmybody.exercise.domain.Exercise;
 import com.coachmybody.exercise.interfaces.dto.ExerciseDetailResponse;
 import com.coachmybody.exercise.interfaces.dto.ExerciseFilterRequest;
 import com.coachmybody.exercise.interfaces.dto.ExerciseSimpleResponse;
-import com.coachmybody.exercise.type.BodyPartType;
+import com.coachmybody.exercise.interfaces.dto.type.BodyTypeRequest;
 import com.coachmybody.exercise.type.ExerciseCategoryType;
 
 import io.swagger.annotations.Api;
@@ -41,7 +41,7 @@ public class ExerciseController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping
 	public PageResponse<ExerciseSimpleResponse> findExercise(@RequestParam ExerciseCategoryType category,
-		@RequestParam(required = false, defaultValue = "NONE") BodyPartType bodyPart,
+		@RequestParam(required = false, defaultValue = "NONE") BodyTypeRequest bodyPart,
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "20") int size) {
 

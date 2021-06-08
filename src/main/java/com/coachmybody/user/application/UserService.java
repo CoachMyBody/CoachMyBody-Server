@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,8 @@ import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.common.exception.InvalidAccessTokenException;
 import com.coachmybody.common.exception.InvalidRefreshTokenException;
 import com.coachmybody.common.exception.NotFoundEntityException;
+import com.coachmybody.routine.domain.Routine;
+import com.coachmybody.routine.domain.repository.RoutineBookmarkQueryRepository;
 import com.coachmybody.user.domain.User;
 import com.coachmybody.user.domain.UserAuth;
 import com.coachmybody.user.domain.repository.UserAuthRepository;
@@ -30,6 +34,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final UserAuthRepository userAuthRepository;
+	private final RoutineBookmarkQueryRepository routineBookmarkQueryRepository;
 
 	public void register(RegisterRequest request) {
 		if (userRepository.findBySocialId(request.getSocialId()).isPresent()) {
@@ -103,5 +108,10 @@ public class UserService {
 			.stream()
 			.map(UserResponse::of)
 			.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Routine> findBookmarkRoutines(User user, Pageable pageable) {
+		return routineBookmarkQueryRepository.findBookmarkRoutines(user, pageable);
 	}
 }

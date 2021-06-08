@@ -86,8 +86,12 @@ public class RoutineController {
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/routines/{routineId}")
-	public ResponseEntity<RoutineDetailResponse> findRoutineById(@PathVariable("routineId") Long routineId) {
-		return ResponseEntity.ok(routineService.findRoutineById(routineId));
+	public ResponseEntity<RoutineDetailResponse> findRoutineById(@RequestHeader HttpHeaders headers,
+		@PathVariable("routineId") Long routineId) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		return ResponseEntity.ok(routineService.findRoutineById(routineId, user.getId()));
 	}
 
 	@ApiOperation("루틴 삭제")
@@ -104,7 +108,7 @@ public class RoutineController {
 
 		User user = userService.findByToken(headerDto.getToken());
 
-		routineService.deleteByIds(request.getRoutineIds(), user.getId());
+		routineService.deleteByIds(request.getRoutineIds());
 	}
 
 	@ApiOperation("루틴 운동 추가")
@@ -170,5 +174,33 @@ public class RoutineController {
 		@PathVariable("routineExerciseId") Long routineExerciseId,
 		@RequestBody RoutineExerciseUpdateRequest request) {
 		routineService.updateRoutineExercise(routineExerciseId, request);
+	}
+
+	@ApiOperation("루틴 북마크 등록 / 해제")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴 북마크 등록 / 해제 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping("/routines/{routineId}/bookmark")
+	public boolean bookmarkRoutine(@RequestHeader HttpHeaders headers,
+		@PathVariable("routineId") Long routineId) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+		return routineService.bookmark(routineId, user.getId());
+	}
+
+	@ApiOperation("루틴 북마크 해제")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴 북마크 해제 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/routines/bookmark")
+	public void deleteBookmark(@RequestHeader HttpHeaders headers,
+		@RequestBody RoutineDeleteRequest request) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+		routineService.deleteBookmark(user, request.getRoutineIds());
 	}
 }

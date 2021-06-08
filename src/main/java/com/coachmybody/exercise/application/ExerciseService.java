@@ -1,5 +1,7 @@
 package com.coachmybody.exercise.application;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,9 +27,11 @@ public class ExerciseService {
 	}
 
 	public ExerciseDetailResponse findExerciseById(final long exerciseId) {
-		Exercise exercise =  exerciseRepository.findById(exerciseId)
+		Exercise exercise = exerciseRepository.findById(exerciseId)
 			.orElseThrow(NotFoundEntityException::new);
 
-		return ExerciseDetailResponse.of(exercise);
+		List<Exercise> relatedExercises = exerciseQueryRepository.findRelatedExercises(exercise);
+
+		return ExerciseDetailResponse.of(exercise, relatedExercises);
 	}
 }

@@ -2,9 +2,12 @@ package com.coachmybody.common.util;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.Locale;
 
 import lombok.experimental.UtilityClass;
 
@@ -22,5 +25,17 @@ public class DateUtils {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		return date.format(formatter);
+	}
+
+	public static LocalDate convertFirstDayOfMonth(YearMonth yearMonth) {
+		return yearMonth.atDay(1);
+	}
+
+	public static LocalDate convertLastDayOfMonth(YearMonth yearMonth) {
+		return yearMonth.atEndOfMonth();
+	}
+
+	public static String convertDateToDayOfWeek(LocalDate date) {
+		return date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 	}
 }

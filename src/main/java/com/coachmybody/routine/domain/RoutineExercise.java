@@ -30,11 +30,11 @@ public class RoutineExercise {
 	private Long id;
 
 	@JoinColumn(name = "exercise_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Exercise exercise;
 
 	@JoinColumn(name = "routine_id", nullable = false)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Routine routine;
 
 	private Integer priority;

@@ -3,7 +3,6 @@ package com.coachmybody.record.domain.repository;
 import static com.coachmybody.record.domain.QRecord.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -26,9 +25,19 @@ public class RecordQueryRepository {
 			.fetch();
 	}
 
+	public List<Record> findByDateBetween(LocalDate startDate, LocalDate endDate, User user) {
+		return queryFactory.selectFrom(record)
+			.where(betweenDateAndUser(startDate, endDate, user))
+			.fetch();
+	}
+
 	BooleanExpression eqDateAndUser(LocalDate date, User user) {
-		return record.createdAt.before(date.atTime(LocalTime.MAX))
-			.and(record.createdAt.after(date.atTime(LocalTime.MIN)))
+		return record.date.eq(date)
+			.and(record.user.eq(user));
+	}
+
+	BooleanExpression betweenDateAndUser(LocalDate startDate, LocalDate endDate, User user) {
+		return record.date.between(startDate, endDate)
 			.and(record.user.eq(user));
 	}
 }
