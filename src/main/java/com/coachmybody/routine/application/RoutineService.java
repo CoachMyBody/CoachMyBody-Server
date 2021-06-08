@@ -175,4 +175,13 @@ public class RoutineService {
 			return true;
 		}
 	}
+
+	@Transactional
+	public void deleteBookmark(User user, List<Long> routineIds) {
+		UUID userId = user.getId();
+		for (Long routineId : routineIds) {
+			RoutineBookmarkKey key = new RoutineBookmarkKey(routineId, userId);
+			routineBookmarkRepository.deleteById(key);
+		}
+	}
 }

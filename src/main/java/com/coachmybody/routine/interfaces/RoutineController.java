@@ -185,4 +185,18 @@ public class RoutineController {
 		User user = userService.findByToken(header.getToken());
 		return routineService.bookmark(routineId, user.getId());
 	}
+
+	@ApiOperation("루틴 북마크 해제")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴 북마크 해제 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@DeleteMapping("/routines/bookmark")
+	public void deleteBookmark(@RequestHeader HttpHeaders headers,
+		@RequestBody RoutineDeleteRequest request) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+		routineService.deleteBookmark(user, request.getRoutineIds());
+	}
 }
