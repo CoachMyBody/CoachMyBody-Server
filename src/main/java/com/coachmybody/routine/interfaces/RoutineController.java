@@ -171,4 +171,18 @@ public class RoutineController {
 		@RequestBody RoutineExerciseUpdateRequest request) {
 		routineService.updateRoutineExercise(routineExerciseId, request);
 	}
+
+	@ApiOperation("루틴 북마크 등록 / 해제")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "루틴 북마크 등록 / 해제 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping("/routines/{routineId}/bookmark")
+	public boolean bookmarkRoutine(@RequestHeader HttpHeaders headers,
+		@PathVariable("routineId") Long routineId) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+		return routineService.bookmark(routineId, user.getId());
+	}
 }
