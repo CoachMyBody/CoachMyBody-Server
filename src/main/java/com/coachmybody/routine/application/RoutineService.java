@@ -65,11 +65,14 @@ public class RoutineService {
 	}
 
 	@Transactional(readOnly = true)
-	public RoutineDetailResponse findRoutineById(final long routineId) {
+	public RoutineDetailResponse findRoutineById(final long routineId, final UUID userId) {
 		Routine routine = routineRepository.findById(routineId)
 			.orElseThrow(EntityNotFoundException::new);
 
-		return RoutineDetailResponse.of(routine);
+		RoutineBookmarkKey key = new RoutineBookmarkKey(routineId, userId);
+		boolean isBookmarked = routineBookmarkRepository.existsById(key);
+
+		return RoutineDetailResponse.of(routine, isBookmarked);
 	}
 
 	@Transactional

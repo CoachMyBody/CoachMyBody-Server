@@ -86,8 +86,12 @@ public class RoutineController {
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/routines/{routineId}")
-	public ResponseEntity<RoutineDetailResponse> findRoutineById(@PathVariable("routineId") Long routineId) {
-		return ResponseEntity.ok(routineService.findRoutineById(routineId));
+	public ResponseEntity<RoutineDetailResponse> findRoutineById(@RequestHeader HttpHeaders headers,
+		@PathVariable("routineId") Long routineId) {
+		HeaderDto header = HeaderDto.of(headers);
+		User user = userService.findByToken(header.getToken());
+
+		return ResponseEntity.ok(routineService.findRoutineById(routineId, user.getId()));
 	}
 
 	@ApiOperation("루틴 삭제")
