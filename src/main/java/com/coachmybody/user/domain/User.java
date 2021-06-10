@@ -41,6 +41,8 @@ public class User {
 
 	private String email;
 
+	private String imageUri;
+
 	public static User of(RegisterRequest request) {
 		return User.builder()
 			.id(UUID.randomUUID())
@@ -48,6 +50,7 @@ public class User {
 			.loginType(request.getLoginType())
 			.nickname(request.getNickname())
 			.email(request.getEmail())
+			.imageUri("")
 			.build();
 	}
 }

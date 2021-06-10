@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.coachmybody.user.interfaces.dto.MypageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -113,5 +114,10 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Page<Routine> findBookmarkRoutines(User user, Pageable pageable) {
 		return routineBookmarkQueryRepository.findBookmarkRoutines(user, pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public MypageResponse getMypage(User user) {
+		return MypageResponse.of(user);
 	}
 }
