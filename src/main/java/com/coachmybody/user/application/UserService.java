@@ -52,13 +52,9 @@ public class UserService {
 
 		UUID userId = user.getId();
 
-		UserAuth newAuth = UserAuth.newAuth(userId);
-
-		Optional<UserAuth> existUserAuth = userAuthRepository.findByUserId(userId);
-		if (existUserAuth.isPresent()) {
-			newAuth = existUserAuth.get();
-			newAuth.refresh();
-		}
+		UserAuth newAuth = userAuthRepository.findByUserId(userId)
+			.orElseGet(() -> UserAuth.newAuth(userId));
+		newAuth.refresh();
 
 		userAuthRepository.save(newAuth);
 

@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(InvalidRefreshTokenException.class)
 	private ResponseEntity<ProblemResponse> invalidRefreshTokenExceptionHandler() {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-			.body(new ProblemResponse("Invalid Refresh Token", 400, "REFRESH_TOKEN"));
+			.body(new ProblemResponse("Invalid Refresh Token", 401, "REFRESH_TOKEN"));
 	}
 
 	@ExceptionHandler(DuplicatedEntityException.class)
