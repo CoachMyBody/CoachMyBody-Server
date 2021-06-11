@@ -203,18 +203,4 @@ public class RoutineController {
 		User user = userService.findByToken(header.getToken());
 		routineService.deleteBookmark(user, request.getRoutineIds());
 	}
-
-	@ApiOperation("내 루틴으로 이동")
-	@ApiResponses(value = {
-		@ApiResponse(code = 200, message = "내 루틴으로 이동 성공"),
-		@ApiResponse(code = 404, message = "존재하지 않는 루틴", response = ProblemResponse.class)
-	})
-	@ResponseStatus(HttpStatus.OK)
-	@PostMapping("/routines/{routineId}/copy")
-	public void copyRoutine(@RequestHeader HttpHeaders headers,
-		@PathVariable("routineId") Long routineId) {
-		HeaderDto header = HeaderDto.of(headers);
-		User user = userService.findByToken(header.getToken());
-		routineService.copyRoutine(routineId, user);
-	}
 }
