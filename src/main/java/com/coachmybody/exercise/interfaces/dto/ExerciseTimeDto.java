@@ -5,8 +5,12 @@ import com.coachmybody.exercise.domain.ExerciseRecord;
 import com.coachmybody.exercise.domain.ExerciseTimeSet;
 import com.coachmybody.exercise.type.ExerciseRecordType;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class ExerciseTimeDto {
 	ExerciseRecordType type;
