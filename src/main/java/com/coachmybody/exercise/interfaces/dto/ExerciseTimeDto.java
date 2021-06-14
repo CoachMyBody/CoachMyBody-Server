@@ -4,6 +4,7 @@ import com.coachmybody.exercise.domain.ExerciseLabSet;
 import com.coachmybody.exercise.domain.ExerciseRecord;
 import com.coachmybody.exercise.domain.ExerciseTimeSet;
 import com.coachmybody.exercise.type.ExerciseRecordType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +15,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ExerciseTimeDto {
 	ExerciseRecordType type;
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	Integer exerciseLab;
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	Integer exerciseMinutes;
+	@JsonInclude(value = JsonInclude.Include.NON_NULL)
 	Integer exerciseSeconds;
 	Integer exerciseSet;
 
