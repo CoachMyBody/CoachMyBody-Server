@@ -24,9 +24,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 		@NonNull HttpServletRequest request,
 		@NonNull HttpServletResponse response,
 		@NonNull Object handler) {
-
-		return true;
-		/*String authorization = request.getHeader("Authorization");
+		String authorization = request.getHeader("Authorization");
 
 		List<String> permitHost = List.of("0:0:0:0:0:0:0:1", "127.0.0.1");
 
@@ -41,7 +39,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 			}
 		}
 
-		throw new InvalidAccessTokenException();*/
+		throw new InvalidAccessTokenException();
 
 	}
 }
