@@ -21,7 +21,7 @@ import com.coachmybody.exercise.type.BodyPartType;
 import com.coachmybody.exercise.type.ExerciseCategoryType;
 import com.coachmybody.exercise.type.MuscleType;
 import com.coachmybody.test.ApiTest;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.coachmybody.user.application.UserService;
 
 import io.restassured.http.ContentType;
 
@@ -29,8 +29,15 @@ class ExerciseControllerTest extends ApiTest {
 	@MockBean
 	private ExerciseService exerciseService;
 
+	@MockBean
+	private UserService userService;
+
 	@Test
-	void findExercise() throws JsonProcessingException {
+	void findExercise() {
+		String mockAccessToken = "mockAccessToken";
+		String authorization = String.format("Bearer %s", mockAccessToken);
+		mockLogin(mockAccessToken);
+
 		long exerciseId = 1L;
 		String name = "name";
 		String imageUri = "imageUri";
@@ -69,6 +76,7 @@ class ExerciseControllerTest extends ApiTest {
 
 		given()
 			.contentType(ContentType.JSON)
+			.headers("Authorization", authorization)
 			.when()
 			.get("/api/v1/exercises/{exerciseId}", exerciseId)
 			.then()
@@ -93,6 +101,10 @@ class ExerciseControllerTest extends ApiTest {
 
 	@Test
 	void findNonexistentExercise() {
+		String mockAccessToken = "mockAccessToken";
+		String authorization = String.format("Bearer %s", mockAccessToken);
+		mockLogin(mockAccessToken);
+
 		long exerciseId = 1L;
 
 		BDDMockito.given(exerciseService.findExerciseById(exerciseId))
@@ -100,9 +112,15 @@ class ExerciseControllerTest extends ApiTest {
 
 		given()
 			.contentType(ContentType.JSON)
+			.headers("Authorization", authorization)
 			.when()
 			.get("/api/v1/exercises/{exerciseId}", exerciseId)
 			.then()
 			.statusCode(404);
+	}
+
+	private void mockLogin(String mockAccessToken) {
+		BDDMockito.given(userService.isValidToken(mockAccessToken))
+			.willReturn(true);
 	}
 }
