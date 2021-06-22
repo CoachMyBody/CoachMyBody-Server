@@ -50,15 +50,14 @@ public class RoutineController {
 	@ApiOperation("루틴 생성")
 	@ApiResponses(value = {
 		@ApiResponse(code = 201, message = "루틴 생성 성공"),
+		@ApiResponse(code = 401, message = "유효하지 않은 토큰", response = ProblemResponse.class),
 		@ApiResponse(code = 400, message = "요청 프로퍼티 오류", response = ProblemResponse.class)
 	})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/routines")
 	public void create(@RequestHeader HttpHeaders headers,
 		@RequestBody @Valid RoutineCreateRequest request) {
-
 		HeaderDto headerDto = HeaderDto.of(headers);
-
 		User user = userService.findByToken(headerDto.getToken());
 
 		routineService.create(request.getTitle(), user);
@@ -73,7 +72,6 @@ public class RoutineController {
 	public List<RoutineSimpleResponse> myRoutines(@RequestHeader HttpHeaders headers,
 		@RequestParam(value = "hasExercise", required = false) boolean hasExercise) {
 		HeaderDto headerDto = HeaderDto.of(headers);
-
 		User user = userService.findByToken(headerDto.getToken());
 
 		return routineService.findMyRoutines(user, hasExercise);
@@ -105,7 +103,6 @@ public class RoutineController {
 	public void delete(@RequestHeader HttpHeaders headers,
 		@RequestBody @Valid RoutineDeleteRequest request) {
 		HeaderDto headerDto = HeaderDto.of(headers);
-
 		User user = userService.findByToken(headerDto.getToken());
 
 		routineService.deleteByIds(request.getRoutineIds());
@@ -132,7 +129,7 @@ public class RoutineController {
 	})
 	@ResponseStatus(HttpStatus.OK)
 	@PatchMapping("/routines/{routineId}/title")
-	public void updateName(@RequestHeader HttpHeaders headers,
+	public void updateTitle(@RequestHeader HttpHeaders headers,
 		@PathVariable("routineId") Long routineId,
 		@RequestParam String newTitle) {
 		routineService.updateTitle(routineId, newTitle);
