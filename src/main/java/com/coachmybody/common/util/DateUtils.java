@@ -24,7 +24,6 @@ public class DateUtils {
 
 	public static String convertDateToString(LocalDate date) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
-
 		return date.format(formatter);
 	}
 
