@@ -11,11 +11,12 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class JsonUtils {
+	private final static String PARSED_ERROR_MESSAGE = "The result can not be parsed";
 	public final static ObjectMapper JSON_MAPPER;
 
 	static {
 		JSON_MAPPER = new ObjectMapper().registerModules(
-			new JavaTimeModule())
+				new JavaTimeModule())
 			.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 			.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -25,7 +26,7 @@ public class JsonUtils {
 		try {
 			return JsonUtils.JSON_MAPPER.writeValueAsString(value);
 		} catch (JsonProcessingException e) {
-			throw new IllegalArgumentException("The result can not be parsed");
+			throw new IllegalArgumentException(PARSED_ERROR_MESSAGE);
 		}
 	}
 }

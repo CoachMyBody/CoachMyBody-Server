@@ -13,8 +13,9 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class DateUtils {
-
 	private static final int EXPIRE_AMOUNT = 1;
+	private static final int FIRST_DAY_OF_MONTH = 1;
+	private static final String DATE_PATTERN = "yyyy-MM-dd";
 	private static final TemporalUnit EXPIRE_UNIT = ChronoUnit.DAYS;
 
 	public static Instant calculateExpireAt(Instant now) {
@@ -22,13 +23,13 @@ public class DateUtils {
 	}
 
 	public static String convertDateToString(LocalDate date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
 		return date.format(formatter);
 	}
 
 	public static LocalDate convertFirstDayOfMonth(YearMonth yearMonth) {
-		return yearMonth.atDay(1);
+		return yearMonth.atDay(FIRST_DAY_OF_MONTH);
 	}
 
 	public static LocalDate convertLastDayOfMonth(YearMonth yearMonth) {
