@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 public class User {
-
 	@Id
 	@GeneratedValue
 	@Type(type = "uuid-char")

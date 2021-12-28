@@ -1,6 +1,9 @@
 package com.coachmybody.user.application;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,8 +25,11 @@ import com.coachmybody.user.domain.UserAuth;
 import com.coachmybody.user.domain.repository.UserAuthRepository;
 import com.coachmybody.user.domain.repository.UserRepository;
 import com.coachmybody.user.interfaces.dto.AuthResponse;
+import com.coachmybody.user.interfaces.dto.MyActivityResponse;
+import com.coachmybody.user.interfaces.dto.MyPageResponse;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 import com.coachmybody.user.interfaces.dto.UserResponse;
+import com.coachmybody.user.type.LoginType;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -109,5 +115,22 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Page<Routine> findBookmarkRoutines(User user, Pageable pageable) {
 		return routineBookmarkQueryRepository.findBookmarkRoutines(user, pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public MyPageResponse getMyPage(User user) {
+		MyActivityResponse activity = MyActivityResponse.builder()
+			.level(0)
+			.badges(Collections.emptyList())
+			.startDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+			.build();
+		return MyPageResponse.builder()
+			.nickname(user.getNickname())
+			.imageUri("")
+			.loginType(LoginType.KAKAO)
+			.birth(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+			.phone("")
+			.activity(activity)
+			.build();
 	}
 }
