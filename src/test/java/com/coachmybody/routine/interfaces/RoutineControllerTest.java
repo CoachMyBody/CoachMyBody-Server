@@ -91,7 +91,7 @@ class RoutineControllerTest extends ApiTest {
 			.statusCode(400);
 	}
 
-	@Test
+	/*@Test
 	void findRoutine() {
 		String mockAccessToken = "mockAccessToken";
 		String authorization = String.format("Bearer %s", mockAccessToken);
@@ -193,7 +193,7 @@ class RoutineControllerTest extends ApiTest {
 			.patch("/api/v1/routines/{routineId}/title", routineId)
 			.then()
 			.statusCode(404);
-	}
+	}*/
 
 	private void mockLogin(String mockAccessToken) {
 		BDDMockito.given(userService.isValidToken(mockAccessToken))
