@@ -1,5 +1,6 @@
 package com.coachmybody.user.domain;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -39,6 +40,10 @@ public class User {
 	private String nickname;
 
 	private String email;
+
+	private LocalDate birth;
+
+	private String phone;
 
 	public static User of(RegisterRequest request) {
 		return User.builder()
