@@ -28,7 +28,7 @@ public class NunbodyResponse {
 		return NunbodyResponse.builder()
 			.id(nunbody.getId())
 			.imageUri(nunbody.getImageUri())
-			.date(DateUtils.convertDateToString(nunbody.getDate()))
+			.date(DateUtils.convertStringBarType(nunbody.getDate()))
 			.tag(nunbody.getTag() == null ? "" : nunbody.getTag())
 			.build();
 	}

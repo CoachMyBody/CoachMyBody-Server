@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.coachmybody.record.domain.Record;
 import com.coachmybody.user.domain.User;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -31,13 +32,29 @@ public class RecordQueryRepository {
 			.fetch();
 	}
 
-	BooleanExpression eqDateAndUser(LocalDate date, User user) {
+	public LocalDate findFirstRecordDate(User user) {
+		return queryFactory.select(record.date)
+			.from(record)
+			.where(eqUser(user))
+			.orderBy(dateAsc())
+			.fetchFirst();
+	}
+
+	private BooleanExpression eqDateAndUser(LocalDate date, User user) {
 		return record.date.eq(date)
 			.and(record.user.eq(user));
 	}
 
-	BooleanExpression betweenDateAndUser(LocalDate startDate, LocalDate endDate, User user) {
+	private BooleanExpression betweenDateAndUser(LocalDate startDate, LocalDate endDate, User user) {
 		return record.date.between(startDate, endDate)
 			.and(record.user.eq(user));
+	}
+
+	private BooleanExpression eqUser(User user) {
+		return record.user.eq(user);
+	}
+
+	private OrderSpecifier dateAsc() {
+		return record.date.asc();
 	}
 }

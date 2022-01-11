@@ -33,7 +33,7 @@ class DateUtilsTest {
 		String expect = "2021-08-29";
 
 		// when
-		String result = DateUtils.convertDateToString(date);
+		String result = DateUtils.convertStringBarType(date);
 
 		// then
 		assertThat(result).isEqualTo(expect);

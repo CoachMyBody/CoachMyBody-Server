@@ -34,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/users")
 @RestController
 public class UserController {
-
 	private final UserService userService;
 
 	@ApiOperation("전체 유저 정보 조회")

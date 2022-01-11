@@ -15,15 +15,24 @@ import lombok.experimental.UtilityClass;
 public class DateUtils {
 	private static final int EXPIRE_AMOUNT = 1;
 	private static final int FIRST_DAY_OF_MONTH = 1;
-	private static final String DATE_PATTERN = "yyyy-MM-dd";
+	private static final String DATE_PATTERN_BAR = "yyyy-MM-dd";
+	private static final String DATE_PATTERN_DOT = "yyyy.MM.dd";
 	private static final TemporalUnit EXPIRE_UNIT = ChronoUnit.DAYS;
 
 	public static Instant calculateExpireAt(Instant now) {
 		return now.plus(EXPIRE_AMOUNT, EXPIRE_UNIT);
 	}
 
-	public static String convertDateToString(LocalDate date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+	public static String convertStringBarType(LocalDate date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN_BAR);
+		return date.format(formatter);
+	}
+
+	public static String convertStringDotType(LocalDate date) {
+		if (date == null) {
+			return "";
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN_DOT);
 		return date.format(formatter);
 	}
 

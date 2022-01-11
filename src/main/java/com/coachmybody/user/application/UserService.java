@@ -2,8 +2,6 @@ package com.coachmybody.user.application;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +16,8 @@ import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.common.exception.InvalidAccessTokenException;
 import com.coachmybody.common.exception.InvalidRefreshTokenException;
 import com.coachmybody.common.exception.NotFoundEntityException;
+import com.coachmybody.common.util.DateUtils;
+import com.coachmybody.record.domain.repository.RecordQueryRepository;
 import com.coachmybody.routine.domain.Routine;
 import com.coachmybody.routine.domain.repository.RoutineBookmarkQueryRepository;
 import com.coachmybody.user.domain.User;
@@ -41,6 +41,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final UserAuthRepository userAuthRepository;
 	private final RoutineBookmarkQueryRepository routineBookmarkQueryRepository;
+	private final RecordQueryRepository recordQueryRepository;
 
 	public void register(RegisterRequest request) {
 		if (userRepository.findBySocialId(request.getSocialId()).isPresent()) {
@@ -119,17 +120,16 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public MyPageResponse getMyPage(User user) {
-		MyActivityResponse activity = MyActivityResponse.builder()
-			.level(0)
-			.badges(Collections.emptyList())
-			.startDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-			.build();
+		LocalDate startDate = recordQueryRepository.findFirstRecordDate(user);
+		LocalDate today = LocalDate.now();
+
+		MyActivityResponse activity = MyActivityResponse.of(startDate);
 		return MyPageResponse.builder()
 			.nickname(user.getNickname())
 			.imageUri("")
 			.loginType(LoginType.KAKAO)
-			.birth(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-			.phone("")
+			.birth(DateUtils.convertStringDotType(today))
+			.phone(user.getPhone() == null ? "" : user.getPhone())
 			.activity(activity)
 			.build();
 	}
