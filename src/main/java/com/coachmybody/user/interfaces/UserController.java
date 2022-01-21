@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +25,7 @@ import com.coachmybody.user.domain.User;
 import com.coachmybody.user.interfaces.dto.MyPageResponse;
 import com.coachmybody.user.interfaces.dto.UserCoachConnectionResponse;
 import com.coachmybody.user.interfaces.dto.UserResponse;
+import com.coachmybody.user.interfaces.dto.UserUpdateRequest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -92,5 +95,21 @@ public class UserController {
 		User user = userService.findByToken(headerDto.getToken());
 
 		return ResponseEntity.ok(userService.getCoach(user));
+	}
+
+	@ApiOperation(value = "유저 정보 수정")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "유저 정보 수정 성공"),
+		@ApiResponse(code = 400, message = "요청 프로퍼티 오류"),
+		@ApiResponse(code = 404, message = "존재하지 않는 회원")
+	})
+	@ResponseStatus(value = HttpStatus.OK)
+	@PutMapping
+	public void update(@RequestHeader HttpHeaders headers,
+		@RequestBody UserUpdateRequest request) {
+		HeaderDto headerDto = HeaderDto.of(headers);
+		User user = userService.findByToken(headerDto.getToken());
+
+		userService.update(user, request);
 	}
 }

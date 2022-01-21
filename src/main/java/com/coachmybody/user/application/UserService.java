@@ -32,6 +32,7 @@ import com.coachmybody.user.interfaces.dto.MyPageResponse;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
 import com.coachmybody.user.interfaces.dto.UserCoachConnectionResponse;
 import com.coachmybody.user.interfaces.dto.UserResponse;
+import com.coachmybody.user.interfaces.dto.UserUpdateRequest;
 import com.coachmybody.user.type.LoginType;
 
 import lombok.NonNull;
@@ -142,5 +143,10 @@ public class UserService {
 		Coach coach = coachRepository.findByUser(user)
 			.orElseGet(Coach::defaultEntity);
 		return UserCoachConnectionResponse.of(coach);
+	}
+
+	@Transactional
+	public void update(User user, UserUpdateRequest request) {
+		user.update(request);
 	}
 }

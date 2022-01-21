@@ -1,5 +1,6 @@
 package com.coachmybody.user.domain;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.Type;
 
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
+import com.coachmybody.user.interfaces.dto.UserUpdateRequest;
 import com.coachmybody.user.type.LoginType;
 
 import lombok.AllArgsConstructor;
@@ -40,6 +42,10 @@ public class User {
 
 	private String email;
 
+	private LocalDate birth;
+
+	private String phone;
+
 	public static User of(RegisterRequest request) {
 		return User.builder()
 			.id(UUID.randomUUID())
@@ -48,5 +54,11 @@ public class User {
 			.nickname(request.getNickname())
 			.email(request.getEmail())
 			.build();
+	}
+
+	public void update(UserUpdateRequest request) {
+		this.nickname = request.getNickname();
+		this.birth = request.getBirth();
+		this.phone = request.getPhone();
 	}
 }
