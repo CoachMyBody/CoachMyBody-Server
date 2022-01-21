@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.coachmybody.coach.domain.Coach;
+import com.coachmybody.coach.domain.repository.CoachRepository;
 import com.coachmybody.common.exception.DuplicatedEntityException;
 import com.coachmybody.common.exception.InvalidAccessTokenException;
 import com.coachmybody.common.exception.InvalidRefreshTokenException;
@@ -28,6 +30,7 @@ import com.coachmybody.user.interfaces.dto.AuthResponse;
 import com.coachmybody.user.interfaces.dto.MyActivityResponse;
 import com.coachmybody.user.interfaces.dto.MyPageResponse;
 import com.coachmybody.user.interfaces.dto.RegisterRequest;
+import com.coachmybody.user.interfaces.dto.UserCoachConnectionResponse;
 import com.coachmybody.user.interfaces.dto.UserResponse;
 import com.coachmybody.user.type.LoginType;
 
@@ -37,10 +40,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-
 	private final UserRepository userRepository;
 	private final UserAuthRepository userAuthRepository;
 	private final RoutineBookmarkQueryRepository routineBookmarkQueryRepository;
+	private final CoachRepository coachRepository;
 
 	public void register(RegisterRequest request) {
 		if (userRepository.findBySocialId(request.getSocialId()).isPresent()) {
@@ -132,5 +135,12 @@ public class UserService {
 			.phone("")
 			.activity(activity)
 			.build();
+	}
+
+	@Transactional(readOnly = true)
+	public UserCoachConnectionResponse getCoach(User user) {
+		Coach coach = coachRepository.findByUser(user)
+			.orElseGet(Coach::defaultEntity);
+		return UserCoachConnectionResponse.of(coach);
 	}
 }

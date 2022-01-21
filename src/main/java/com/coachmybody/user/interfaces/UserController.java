@@ -21,6 +21,7 @@ import com.coachmybody.routine.interfaces.dto.RoutineSimpleResponse;
 import com.coachmybody.user.application.UserService;
 import com.coachmybody.user.domain.User;
 import com.coachmybody.user.interfaces.dto.MyPageResponse;
+import com.coachmybody.user.interfaces.dto.UserCoachConnectionResponse;
 import com.coachmybody.user.interfaces.dto.UserResponse;
 
 import io.swagger.annotations.Api;
@@ -70,12 +71,26 @@ public class UserController {
 		@ApiResponse(code = 200, message = "마이페이지 조회 성공"),
 		@ApiResponse(code = 404, message = "존재하지 않는 회원")
 	})
-	@ResponseStatus(code = HttpStatus.OK)
+	@ResponseStatus(value = HttpStatus.OK)
 	@GetMapping(value = "/my-page")
 	public ResponseEntity<MyPageResponse> getMyPage(@RequestHeader HttpHeaders headers) {
 		HeaderDto header = HeaderDto.of(headers);
 		User user = userService.findByToken(header.getToken());
 
 		return ResponseEntity.ok(userService.getMyPage(user));
+	}
+
+	@ApiOperation(value = "강사 연동 정보 조회")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "강사 연동 정보 조회 성공"),
+		@ApiResponse(code = 404, message = "존재하지 않는 회원")
+	})
+	@ResponseStatus(value = HttpStatus.OK)
+	@GetMapping(value = "/coach")
+	public ResponseEntity<UserCoachConnectionResponse> getCoach(@RequestHeader HttpHeaders headers) {
+		HeaderDto headerDto = HeaderDto.of(headers);
+		User user = userService.findByToken(headerDto.getToken());
+
+		return ResponseEntity.ok(userService.getCoach(user));
 	}
 }
