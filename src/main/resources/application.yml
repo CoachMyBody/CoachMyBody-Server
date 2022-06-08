@@ -23,38 +23,3 @@ logging:
     org:
       hibernate:
         SQL: debug
-
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-  jpa:
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format-sql: true
-    database-platform: org.hibernate.dialect.MariaDB103Dialect
-  datasource:
-    initialization-mode: always
-    url: jdbc:mariadb://coach-my-body-rds.cy7q1m0zru6c.ap-northeast-2.rds.amazonaws.com:3306/coachmybody
-    username: coachmybody
-    password: coachmybodyserver()
-    driver-class-name: org.mariadb.jdbc.Driver
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: debug
-
----
-aws:
-  credential:
-    access-key: AKIAXHPHGEJTJKMXC5US
-    secret-key: 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
-  s3:
-    bucket: coach-my-body-s3
-    nunbody-dir: image/nunbody
-  cloudfront:
-    domain: d32fw0omjr2qmj.cloudfront.net
